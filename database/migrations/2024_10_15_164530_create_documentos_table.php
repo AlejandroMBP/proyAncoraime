@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('documento_pdf');
             $table->date('fecha');
             $table->string('ubicacion');
-            $table->unsignedBigInteger('categoria_id');
+            $table->unsignedBigInteger('tipo_documento_id');
             $table->integer('cantidad_fojas');
             $table->string('codigo_qr');
             $table->integer('numero_carpeta');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('usuario_id');
             $table->timestamps();
             // Convertir a clave foránea  
-            $table->foreign('categoria_id')->references('id')->on('categorias')->onDelete('cascade');
+            $table->foreign('tipo_documento_id')->references('id')->on('tipos_documentos')->onDelete('cascade');
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
