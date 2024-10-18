@@ -33,7 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     ///
     Route::get('/cargos',[CargoController::class,'index'])->name('administrador.cargos.listar');
-    Route::get('/cargos',[CargoController::class,'editar'])->name('administrador.cargos.editar');
+    Route::get('/cargos',[CargoController::class,'modificar'])->name('administrador.cargos.modificar');
+    Route::get('/cargos',[CargoController::class,'eliminar'])->name('administrador.cargos.eliminar');
 });
 
 
