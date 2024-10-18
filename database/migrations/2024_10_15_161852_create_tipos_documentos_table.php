@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('tipos_documentos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre',60);
+            $table->string('nombre', 60);
             $table->text('descripcion');
-            
-            $table->string('estado',30);  
-            $table->unsignedBigInteger('usuario_id'); 
+            $table->string('estado', 30);
+            $table->unsignedBigInteger('usuario_id');
             $table->timestamps();
-	        //clave foranea 
-            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');  
+            //clave foranea
+            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

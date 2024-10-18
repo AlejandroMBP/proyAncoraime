@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('../../assets/css/sidebar/side-nav.css') }}">
     <link rel="stylesheet" href="{{ asset('../../assets/css/fonts/fonts-style.css') }}">
     <link rel="stylesheet" href="{{ asset('../../assets/css/nanoscroller/nanoscroller.css') }}">
+    @stack('links')
 </head>
 
 <body class="sidebar-mini fixed skin-blue">
