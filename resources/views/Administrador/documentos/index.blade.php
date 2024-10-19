@@ -4,8 +4,8 @@
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
-                Advanced Table
-                <small>Tables</small>
+                Documentos
+                <small>Registro</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="../../index.html"><i class="fa fa-home"></i> Administrador</a></li>
@@ -116,14 +116,12 @@
 @endsection
 @push('links')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
     <link rel="stylesheet" href="{{ asset('assets/css/tables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/tables/buttons.dataTables.min.css') }}">
 @endpush
 @push('scripts')
     <!-- Incluir PDF.js desde un CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>

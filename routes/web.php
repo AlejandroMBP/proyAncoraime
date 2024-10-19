@@ -4,6 +4,8 @@ use App\Http\Controllers\CargoController;
 use App\Http\Controllers\documentosController;
 use App\Http\Controllers\metricascontroller;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\tipoDocumentoController;
+use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,9 +24,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('Administrador.app');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/metricas', [metricascontroller::class, 'index'])->name('metricas.index'); // ruta que remplaza a dashboard ahora se llama metricas
 
 //rutas protegidas
@@ -36,8 +35,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/cargos', [CargoController::class, 'index'])->name('administrador.cargos.listar');
 });
 
-Route::prefix('/documentos')->group(function () {
 
+//rutas para tipo documento
+Route::prefix('/tipoDoc')->group(function () {
+    Route::get('/', [tipoDocumentoController::class, 'index'])->name('tipoDoc.index');
+    Route::post('/create', [tipoDocumentoController::class, 'store'])->name('tipoDoc.store');
+    Route::put('/editar/{id}', [tipoDocumentoController::class, 'update'])->name('tipoDoc.update');
+    Route::post('/cambioDeEstado/{id}', [tipoDocumentoController::class, 'cambioEstado'])->name('tipoDoc.cambioEstado');
+});
+
+//rutas para documento
+Route::prefix('/documentos')->group(function () {
     Route::get('/', [documentosController::class, 'index'])->name('documentos.index');
 });
 

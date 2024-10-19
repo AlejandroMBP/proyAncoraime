@@ -39,17 +39,6 @@
         /* Sin borde superior */
     }
 
-    #pdfCanvas {
-        height: auto;
-        max-height: 300px;
-        /* Ajusta la altura máxima según tus necesidades */
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        width: 100%;
-        display: none;
-        /* Ocultar el canvas por defecto */
-    }
-
     .form-select {
         height: calc(2.25rem + 2px);
         /* Altura ajustada para que coincida con otros campos */
@@ -230,107 +219,28 @@
         /* Bordes redondeados */
     }
 </style>
-<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content custom-modal">
-            <div class="modal-header custom-modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Nuevo Documento</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body custom-modal-body">
-                <div class="mb-3">
-                    <label for="hojaDeRuta" class="form-label">Hoja de ruta</label>
-                    <input type="text" id="hojaDeRuta" name="hojaDeRuta" class="form-control"
-                        placeholder="Ingrese hoja de ruta" required>
+<div class="modal fade" id="TipoDocModalCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form id="createTipoDocForm" action="{{ route('tipoDoc.store') }}" method="POST">
+        @csrf
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content custom-modal">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nuevo Tipo Documento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-3">
-                    <label for="titulo" class="form-label">Título</label>
-                    <input type="text" id="titulo" name="titulo" class="form-control"
-                        placeholder="Ingrese título" required>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-md-8">
-                        <label for="documentoPDF" class="form-label">Documento PDF</label>
-                        <input type="file" id="documentoPDF" name="documentoPDF" class="form-control"
-                            accept="application/pdf" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Vista previa del PDF</label>
-                        <canvas id="pdfCanvas"
-                            style="border: 1px solid #ccc; border-radius: 10px; width: 100%; display: none;"></canvas>
+                <div class="modal-body custom-modal-body">
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">descripcion</label>
+                        <input type="text" id="descripcion" name="descripcion" class="form-control"
+                            placeholder="Ingrese descripcion" required>
                     </div>
                 </div>
-                <div class="mb-3 row">
-                    <div class="col-md-3">
-                        <label for="fecha" class="form-label">Fecha</label>
-                        <input type="date" id="fecha" name="fecha" class="form-control" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="categoria" class="form-label">Tipo de documento</label>
-                        <select id="categoria" name="categoria" class="form-select" required>
-                            <option value="" disabled selected>Seleccione una categoría</option>
-                            <option value="categoria1">Categoría 1</option>
-                            <option value="categoria2">Categoría 2</option>
-                            <option value="categoria3">Categoría 3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="cantidadFojas" class="form-label">Cantidad de fojas</label>
-                        <input type="number" id="cantidadFojas" name="cantidadFojas" class="form-control"
-                            placeholder="Cantidad" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="nroCarpeta" class="form-label">Nro. Carpeta</label>
-                        <input type="number" id="nroCarpeta" name="nroCarpeta" class="form-control"
-                            placeholder="Nro. Carpeta" required>
-                    </div>
+                <div class="modal-footer custom-modal-footer">
+                    <button type="button" class="btn btn-secondary custom-close-btn"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary custom-save-btn">Crear</button>
                 </div>
-                <div class="mb-3">
-                    <label for="ubicacion" class="form-label">Ubicación</label>
-                    <input type="text" id="ubicacion" name="ubicacion" class="form-control"
-                        placeholder="Ingrese ubicación" required>
-                </div>
-            </div>
-            <div class="modal-footer custom-modal-footer">
-                <button type="button" class="btn btn-secondary custom-close-btn"
-                    data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary custom-save-btn">Guardar cambios</button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
-
-<script>
-    const fileInput = document.getElementById('documentoPDF');
-    const canvas = document.getElementById('pdfCanvas');
-    const ctx = canvas.getContext('2d');
-
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file && file.type === 'application/pdf') {
-            const fileURL = URL.createObjectURL(file);
-
-            canvas.style.display = 'block';
-            pdfjsLib.getDocument(fileURL).promise.then(pdf => {
-                pdf.getPage(1).then(page => {
-                    const viewport = page.getViewport({
-                        scale: 1
-                    });
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-
-                    const renderContext = {
-                        canvasContext: ctx,
-                        viewport: viewport
-                    };
-                    page.render(renderContext);
-                });
-            }).catch(err => {
-                console.error('Error al cargar el PDF:', err);
-            });
-        } else {
-            alert('Por favor seleccione un archivo PDF válido.');
-            canvas.style.display = 'none';
-        }
-    });
-</script>

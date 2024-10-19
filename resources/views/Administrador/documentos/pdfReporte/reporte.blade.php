@@ -234,7 +234,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content custom-modal">
             <div class="modal-header custom-modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Título del Modal</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Generar Reporte</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body custom-modal-body">
@@ -248,7 +248,7 @@
                         <input type="date" id="fecha-hasta" name="fecha-hasta" class="form-control" required>
                     </div>
                     <div class="col-md-3">
-                        <label for="categoria" class="form-label">Categoría</label>
+                        <label for="categoria" class="form-label">Tipo de Documento</label>
                         <select id="categoria" name="categoria" class="form-select" required>
                             <option value="" disabled selected>Seleccione una categoría</option>
                             <option value="categoria1">Categoría 1</option>

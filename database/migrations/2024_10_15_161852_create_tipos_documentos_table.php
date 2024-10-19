@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('tipos_documentos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 60);
             $table->text('descripcion');
-            $table->string('estado', 30);
+            $table->string('estado')->default(1); //cambio de estado 1 activo 0 inactivo por defecto 1
             $table->unsignedBigInteger('usuario_id');
             $table->timestamps();
             //clave foranea

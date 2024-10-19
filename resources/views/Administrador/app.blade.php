@@ -24,6 +24,11 @@
     <link rel="stylesheet" href="{{ asset('../../assets/css/sidebar/side-nav.css') }}">
     <link rel="stylesheet" href="{{ asset('../../assets/css/fonts/fonts-style.css') }}">
     <link rel="stylesheet" href="{{ asset('../../assets/css/nanoscroller/nanoscroller.css') }}">
+    <!-- Incluye el CSS de SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Incluye el JS de SweetAlert2 -->
+
     @stack('links')
 </head>
 
@@ -57,6 +62,8 @@
     <!-- Theme JS -->
     <script src="{{ asset('../../assets/js/nanoscroller/nanoscroller.js') }}"></script>
     <script src="{{ asset('../../assets/js/custom/theme.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @stack('scripts')
 </body>
 
