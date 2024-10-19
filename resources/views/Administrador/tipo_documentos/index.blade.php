@@ -188,7 +188,6 @@
                         icon: "error",
                         title: "Oops...",
                         text: "Hubo un error al crear el tipo de documento.",
-                        footer: '<a href="#">Por qué tengo este problema?</a>'
                     });
                 }
             });
@@ -217,7 +216,6 @@
                         icon: "error",
                         title: "Oops...",
                         text: "Hubo un error al actualizar el tipo de documento.",
-                        footer: '<a href="#">Por qué tengo este problema?</a>'
                     });
                 }
             });
