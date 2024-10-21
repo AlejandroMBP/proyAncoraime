@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithDrawings;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -14,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class DocumentosExport implements FromCollection, WithHeadings, WithMapping, WithStyles
+class DocumentosExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithDrawings, WithCustomStartCell
 {
     protected $fechaDesde;
     protected $fechaHasta;
@@ -68,8 +69,8 @@ class DocumentosExport implements FromCollection, WithHeadings, WithMapping, Wit
     // Estilos de las celdas
     public function styles(Worksheet $sheet)
     {
-        // Aplicar estilo a las cabeceras (fila 1)
-        $sheet->getStyle('A1:G1')->applyFromArray([
+        // Aplicar estilo a las cabeceras (fila 3 en este caso)
+        $sheet->getStyle('A10:G10')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['argb' => Color::COLOR_WHITE],
@@ -100,6 +101,25 @@ class DocumentosExport implements FromCollection, WithHeadings, WithMapping, Wit
         $sheet->getColumnDimension('G')->setWidth(15); // Fecha
 
         // Centrar el contenido de las celdas
-        $sheet->getStyle('A3:G' . ($sheet->getHighestRow()))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A10:G' . ($sheet->getHighestRow()))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    }
+
+    // Comenzar la tabla desde la celda A4
+    public function startCell(): string
+    {
+        return 'A10';
+    }
+
+    // Agregar un logo o imagen
+    public function drawings()
+    {
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo');
+        $drawing->setPath(public_path('/img/imgancoraime.jpg')); // Ruta al logo
+        $drawing->setHeight(90); // Altura del logo
+        $drawing->setCoordinates('A1'); // Posición donde se insertará el logo
+
+        return $drawing;
     }
 }
