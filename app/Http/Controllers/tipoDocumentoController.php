@@ -30,35 +30,24 @@ class tipoDocumentoController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validar los datos
         $validated = $request->validate([
             'descripcion' => 'required|string|max:255',
         ]);
-
-        // Encontrar el tipo de documento por su ID
         $tipoDocumento = TipoDocumento::findOrFail($id);
-
-        // Actualizar los datos
         $tipoDocumento->update([
             'descripcion' => $validated['descripcion'],
         ]);
-
-        // Redirigir con un mensaje de éxito
         return response()->json(['success' => true, 'message' => 'Tipo de Documento actualizado correctamente.']);
     }
 
-
-    public function cambioEstado(Request $request, $id)
+    public function cambioEstado($id)
     {
-        // Encontrar el tipo de documento por su ID
         $tipoDocumento = TipoDocumento::findOrFail($id);
-
-        // Cambiar el estado
         try {
             if ($tipoDocumento->estado == 1) {
                 $tipoDocumento->estado = 0;
             } else {
-                $tipoDocumento->estado = 1; // Cambia el estado de nuevo a 1 si es necesario
+                $tipoDocumento->estado = 1;
             }
             $tipoDocumento->save();
 

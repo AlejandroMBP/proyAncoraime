@@ -40,33 +40,68 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Hoja de Ruta</th>
                                     <th>Título</th>
                                     <th>Fecha</th>
+                                    <th>ubicacion</th>
+                                    <th>tipo de documento</th>
+                                    <th>Fojas</th>
                                     <th>Número Carpeta</th>
-                                    <th>Categoría</th>
-                                    <th>Cantidad Fojas</th>
+
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Michael</td>
-                                    <td>2024-10-18</td>
-                                    <td>123</td>
-                                    <td>Categoría A</td>
-                                    <td>50</td>
-                                    <td>
-                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                            <button type="button" class="rounded-flexible-btn"><i
-                                                    class="fas fa-trash-alt"></i></button>
-                                            <button type="button" class="rounded-flexible-btn"><i
-                                                    class="fas fa-edit"></i></button>
-                                            <button type="button" class="rounded-flexible-btn"><i
-                                                    class="fas fa-eye"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @foreach ($documentos as $documento)
+                                    @if ($documento->estado == 1)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $documento->hoja_ruta }}</td>
+                                            <td>{{ $documento->titulo }}</td>
+                                            <td>{{ $documento->fecha }}</td>
+                                            <td>{{ $documento->ubicacion }}</td>
+                                            <td>{{ $documento->tipoDocumento->descripcion }}</td>
+                                            <td>{{ $documento->cantidad_fojas }}</td>
+                                            <td>{{ $documento->numero_carpeta }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group"
+                                                    aria-label="Basic mixed styles example">
+                                                    <form action="{{ route('documentos.cambioEstado', $documento->id) }}"
+                                                        method="POST" class="formbtn">
+                                                        @csrf
+                                                        <button type="submit" class="rounded-flexible-btn delete-btn"><i
+                                                                class="fas fa-trash-alt"></i></button>
+                                                    </form>
+
+                                                    <button type="button" class="rounded-flexible-btn editbutton"
+                                                        data-id="{{ $documento->id }}"
+                                                        data-hojaruta="{{ $documento->hoja_ruta }}"
+                                                        data-titulo="{{ $documento->titulo }}"
+                                                        data-fecha="{{ $documento->fecha }}"
+                                                        data-categoria="{{ $documento->tipo_documento_id }}"
+                                                        data-fojas="{{ $documento->cantidad_fojas }}"
+                                                        data-carpeta="{{ $documento->numero_carpeta }}"
+                                                        data-ubicacion="{{ $documento->ubicacion }}"
+                                                        data-pdf="{{ asset('storage/' . $documento->documento_pdf) }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+
+                                                    <button type="button" class="rounded-flexible-btn preview-button"
+                                                        data-id="{{ $documento->id }}"
+                                                        data-hojaruta="{{ $documento->hoja_ruta }}"
+                                                        data-titulo="{{ $documento->titulo }}"
+                                                        data-fecha="{{ $documento->fecha }}"
+                                                        data-ubicacion="{{ $documento->ubicacion }}"
+                                                        data-pdf="{{ asset('storage/' . $documento->documento_pdf) }}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -76,41 +111,26 @@
                 <div class="card panel panel-default">
                     <div class="card-header">
                         <div class="heading-title">
-                            <button class="rounded-flexible-btn " id="openModalReporte">Generar Reporte</button>
+                            <button class="rounded-flexible-btn" id="openModalReporte">Generar Reporte</button>
                         </div>
                     </div>
-                    <div class="p-4">
-                        <table id="reporteTable" class="table table-striped table-bordered dt-responsive nowrap"
-                            style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nombre del Reporte</th>
-                                    <th>Fecha de Creación</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Reporte Anual</td>
-                                    <td>2024-10-01</td>
-                                    <td>
-                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                            <button type="button" class="rounded-flexible-btn "><i
-                                                    class="fas fa-download"></i></button>
-                                            <button type="button" class="rounded-flexible-btn "><i
-                                                    class="fas fa-eye"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="p-4 text-center" id="reporteContainer" style="display: none;">
+                        <div id="botonesReporte" class="btn-group" role="group" aria-label="Botones de reporte">
+                            <button type="button" class="rounded-flexible-btn" id="descargarPDF">
+                                <i class="fas fa-file-pdf"></i> Descargar PDF
+                            </button>
+                            <button type="button" class="rounded-flexible-btn" id="descargarExcel">
+                                <i class="fas fa-file-excel"></i> Descargar Excel
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
+    @include('Administrador.documentos.vistapreiva')
+    @include('Administrador.documentos.edit')
     @include('Administrador.documentos.create')
     @include('Administrador.documentos.pdfReporte.reporte')
 @endsection
@@ -118,6 +138,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/tables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/tables/buttons.dataTables.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 @endpush
 @push('scripts')
     <!-- Incluir PDF.js desde un CDN -->
@@ -136,54 +157,153 @@
                 myModal.show(); // Muestra el modal
             });
         });
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Obtén el elemento del modal
-            var reporteModal = new bootstrap.Modal(document.getElementById('reporteModal'), {
-                keyboard: false // Opcional: Evitar que el modal cierre con la tecla Esc
+            // Obtén el modal de edición
+            var editModal = new bootstrap.Modal(document.getElementById('editModal'), {
+                keyboard: false
             });
 
-            // Abrir el modal cuando sea necesario
-            document.getElementById('openModalReporte').addEventListener('click', function() {
-                reporteModal.show(); // Muestra el modal
+            // Función para cargar los datos del documento en el formulario de edición
+            document.querySelectorAll('.editButton').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Obtener los datos del documento desde atributos data
+                    const documentId = this.getAttribute('data-id');
+                    const hojaDeRuta = this.getAttribute('data-hojaruta');
+                    const titulo = this.getAttribute('data-titulo');
+                    const fecha = this.getAttribute('data-fecha');
+                    const categoria = this.getAttribute('data-categoria');
+                    const cantidadFojas = this.getAttribute('data-fojas');
+                    const nroCarpeta = this.getAttribute('data-carpeta');
+                    const ubicacion = this.getAttribute('data-ubicacion');
+                    const pdfPath = this.getAttribute(
+                        'data-pdf'); // Asegúrate de que este atributo esté definido en tu botón
+
+                    // Rellenar el formulario con los valores
+                    document.getElementById('editHojaDeRuta').value = hojaDeRuta;
+                    document.getElementById('editTitulo').value = titulo;
+                    document.getElementById('editFecha').value = fecha;
+                    document.getElementById('editCategoria').value = categoria;
+                    document.getElementById('editCantidadFojas').value = cantidadFojas;
+                    document.getElementById('editNroCarpeta').value = nroCarpeta;
+                    document.getElementById('editUbicacion').value = ubicacion;
+
+
+                    const canvas = document.getElementById('pdfPreview');
+                    const ctx = canvas.getContext('2d');
+
+                    canvas.style.width = '25%';
+                    canvas.style.height = 'auto';
+
+                    pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const viewport = page.getViewport({
+                                scale: 1
+                            });
+                            canvas.width = viewport.width;
+                            canvas.height = viewport.height;
+
+                            const renderContext = {
+                                canvasContext: ctx,
+                                viewport: viewport
+                            };
+                            page.render(renderContext);
+                        });
+                    });
+
+                    // Establecer la acción del formulario de edición con la URL correcta
+                    document.getElementById('editForm').action = `/documentos/update/${documentId}`;
+
+                    // Abrir el modal de edición
+                    editModal.show();
+                });
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal de vista previa
+            var previewModal = new bootstrap.Modal(document.getElementById('previewModal'), {
+                keyboard: false
+            });
+
+            document.querySelectorAll('.preview-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Obtener los datos del documento
+                    const hojaDeRuta = this.getAttribute('data-hojaruta');
+                    const titulo = this.getAttribute('data-titulo');
+                    const fecha = this.getAttribute('data-fecha');
+                    const ubicacion = this.getAttribute('data-ubicacion');
+                    const pdfPath = this.getAttribute('data-pdf');
+
+                    // Rellenar el modal con los valores
+                    document.getElementById('previewHojaRuta').innerText = hojaDeRuta;
+                    document.getElementById('previewTitulo').innerText = titulo;
+                    document.getElementById('previewFecha').innerText = fecha;
+                    document.getElementById('previewUbicacion').innerText = ubicacion;
+
+                    // Renderizar el PDF
+                    const canvas = document.getElementById('pdfPreviewCanvas');
+                    const ctx = canvas.getContext('2d');
+
+                    pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const viewport = page.getViewport({
+                                scale: 1
+                            });
+                            canvas.width = viewport.width;
+                            canvas.height = viewport.height;
+
+                            const renderContext = {
+                                canvasContext: ctx,
+                                viewport: viewport
+                            };
+                            page.render(renderContext);
+                        });
+                    });
+
+                    // Abrir el modal de vista previa
+                    previewModal.show();
+                });
+            });
+        });
+
+
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Obtén el elemento del modal
+        //     var reporteModal = new bootstrap.Modal(document.getElementById('reporteModal'), {
+        //         keyboard: false // Opcional: Evitar que el modal cierre con la tecla Esc
+        //     });
+
+        //     // Abrir el modal cuando sea necesario
+        //     document.getElementById('openModalReporte').addEventListener('click', function() {
+        //         reporteModal.show(); // Muestra el modal
+        //     });
+        // });
     </script>
 @endpush
 <style>
     .rounded-flexible-btn {
         background: linear-gradient(to right, #007bff, #20c997);
-        /* Degradado de azul a verde turquesa */
         color: white;
-        /* Color del texto */
         border: none;
-        /* Sin borde */
         border-radius: 25px;
-        /* Bordes redondeados */
         padding: 10px 20px;
-        /* Espaciado interno */
         display: inline-flex;
-        /* Permite alinear el contenido */
         align-items: center;
-        /* Centra el contenido verticalmente */
         justify-content: center;
-        /* Centra el contenido horizontalmente */
         min-width: 50px;
-        /* Ancho mínimo */
         min-height: 40px;
-        /* Alto mínimo */
         font-size: 16px;
-        /* Tamaño del texto */
         text-align: center;
-        /* Alineación del texto */
         transition: all 0.3s ease-in-out;
-        /* Transición suave */
+        margin: 0 5px;
+        /* Espaciado horizontal entre botones */
     }
 
     .rounded-flexible-btn:hover {
         box-shadow: 0 0 10px 2px rgba(32, 201, 151, 0.7);
-        /* Resplandor suave en hover */
         transform: scale(1.05);
-        /* Ligeramente agrandar el botón en hover */
     }
 
     tr th {
@@ -199,25 +319,51 @@
     .nav-tabs .nav-link {
         background-color: #f8f9fa;
         border-radius: 10px;
-        /* color: #007bff; */
         padding: 10px 20px;
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .nav-tabs .nav-link.active {
-        /* background-color: #007bff; */
         color: white;
         border-radius: 10px;
     }
 
     .nav-tabs .nav-link:hover {
         background-color: rgba(0, 123, 255, 0.1);
-        /* color: #007bff; */
     }
 
-    .btn-group .btn {
-        margin-right: 5px;
-        border-radius: 8px;
-        /* Bordes redondeados en los botones de acciones dentro del grupo */
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-group .rounded-flexible-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Asegura que el contenido esté centrado */
+        min-width: 50px;
+        /* Ancho mínimo para todos los botones */
+        min-height: 40px;
+        /* Altura mínima para todos los botones */
+        margin: 0 5px;
+        /* Espaciado horizontal entre botones */
+    }
+
+    /* Asegúrate de que el botón de eliminar sea del mismo tamaño */
+    .delete-btn {
+        min-height: 40px;
+        /* Igualar la altura mínima */
+        min-width: 50px;
+        /* Igualar el ancho mínimo */
+    }
+
+    .formbtn {
+        display: flex;
+        /* Asegura que el formulario también esté en línea */
+        align-items: center;
+        margin: 0;
+        /* Elimina márgenes que puedan desalinear los botones */
     }
 </style>

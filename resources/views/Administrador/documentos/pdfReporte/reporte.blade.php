@@ -230,7 +230,7 @@
         /* Bordes redondeados */
     }
 </style>
-<div class="modal fade" id="reporteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{{-- <div class="modal fade" id="reporteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content custom-modal">
             <div class="modal-header custom-modal-header">
@@ -248,20 +248,81 @@
                         <input type="date" id="fecha-hasta" name="fecha-hasta" class="form-control" required>
                     </div>
                     <div class="col-md-3">
-                        <label for="categoria" class="form-label">Tipo de Documento</label>
+                        <label for="categoria" class="form-label">Tipo de documento</label>
                         <select id="categoria" name="categoria" class="form-select" required>
                             <option value="" disabled selected>Seleccione una categoría</option>
-                            <option value="categoria1">Categoría 1</option>
-                            <option value="categoria2">Categoría 2</option>
-                            <option value="categoria3">Categoría 3</option>
+                            @foreach ($tiposDocumentos as $tipoDocumento)
+                                <option value="{{ $tipoDocumento->id }}">
+                                    {{ $tipoDocumento->descripcion }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
             </div>
             <div class="modal-footer custom-modal-footer">
-                <button type="button" class="btn btn-secondary custom-close-btn" data-bs-dismiss="modal">PDF</button>
-                <button type="button" class="btn btn-primary custom-save-btn">EXCEL</button>
+                <button type="button" class="btn btn-secondary custom-close-btn"
+                    data-bs-dismiss="modal">cancelar</button>
+                <button type="button" class="btn btn-primary custom-save-btn">crear reporte</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+<!-- Modal para generar reporte -->
+<div class="modal fade" id="reporteModal" tabindex="-1" role="dialog" aria-labelledby="reporteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reporteModalLabel">Generar Reporte</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-generar-reporte">
+                    @csrf
+                    <div class="form-group">
+                        <label for="fechaDesde">Fecha Desde</label>
+                        <input type="date" class="form-control" id="fecha_desde" name="fecha_desde" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaHasta">Fecha Hasta</label>
+                        <input type="date" class="form-control" id="fecha_hasta" name="fecha_hasta" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Tipo de Documento</label>
+                        <select class="form-control" id="categoria" name="categoria" required>
+                            <option value="">Seleccione una categoría</option> <!-- Opción por defecto -->
+                            @foreach ($tiposDocumentos as $tipoDocumento)
+                                <option value="{{ $tipoDocumento->id }}">
+                                    {{ $tipoDocumento->descripcion }}
+                                    <!-- Asegúrate de que esta sea la descripción correcta -->
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-primary custom-save-btn" id="btnCrearReporte">Crear
+                        Reporte</button>
+                </form>
+                <!-- Botones PDF y Excel se mostrarán aquí -->
+                <div id="reporteButtons" class="mt-3 d-none">
+                    <button type="button" class="btn btn-success" id="btnDescargarPDF">Descargar PDF</button>
+                    <button type="button" class="btn btn-info" id="btnDescargarExcel">Descargar Excel</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var reporteModal = new bootstrap.Modal(document.getElementById('reporteModal'), {
+            keyboard: false
+        });
+
+        document.getElementById('openModalReporte').addEventListener('click', function() {
+            reporteModal.show();
+        });
+    });
+</script>

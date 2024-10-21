@@ -75,41 +75,27 @@
     <link rel="stylesheet" href="{{ asset('assets/css/tables/buttons.dataTables.min.css') }}">
 @endpush
 @push('scripts')
-    <!-- Incluir PDF.js desde un CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Obtén el elemento del modal
             var TipoDocModalCreate = new bootstrap.Modal(document.getElementById('TipoDocModalCreate'), {
-                keyboard: false // Opcional: Evitar que el modal cierre con la tecla Esc
+                keyboard: false
             });
-
-            // Abrir el modal cuando sea necesario
             document.getElementById('openModaltipoDocumento').addEventListener('click', function() {
-                TipoDocModalCreate.show(); // Muestra el modal
+                TipoDocModalCreate.show();
             });
         });
-
         document.addEventListener('DOMContentLoaded', function() {
             var TipoDocModalEdit = new bootstrap.Modal(document.getElementById('TipoDocModalEdit'), {
                 keyboard: false
             });
-
-            // Escuchar los clicks en los botones de editar
             document.querySelectorAll('#editTipoDocBtn').forEach(function(button) {
                 button.addEventListener('click', function() {
-                    // Obtener los datos del tipo de documento
                     var id = this.getAttribute('data-id');
                     var descripcion = this.getAttribute('data-descripcion');
-
-                    // Llenar los campos del modal con los datos existentes
                     document.getElementById('editDescripcion').value = descripcion;
-
-                    // Cambiar la acción del formulario al editar
                     document.getElementById('editForm').action = 'tipoDoc/editar/' + id;
-
-                    // Mostrar el modal
                     TipoDocModalEdit.show();
                 });
             });
@@ -193,7 +179,7 @@
             });
         });
         $('#editForm').submit(function(event) {
-            event.preventDefault(); // Evita el envío normal del formulario
+            event.preventDefault();
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -207,7 +193,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            location.reload(); // Recargar la página si es necesario
+                            location.reload();
                         });
                     }
                 },

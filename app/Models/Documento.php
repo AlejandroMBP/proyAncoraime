@@ -21,7 +21,7 @@ class Documento extends Model
         'cantidad_fojas',
         'codigo_qr',
         'numero_carpeta',
-        'descripcion',
+        'estado',
         'usuario_id',
     ];
 

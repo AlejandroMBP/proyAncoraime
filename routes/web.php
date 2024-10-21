@@ -4,6 +4,7 @@ use App\Http\Controllers\CargoController;
 use App\Http\Controllers\documentosController;
 use App\Http\Controllers\metricascontroller;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\tipoDocumentoController;
 use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,12 @@ Route::prefix('/tipoDoc')->group(function () {
 //rutas para documento
 Route::prefix('/documentos')->group(function () {
     Route::get('/', [documentosController::class, 'index'])->name('documentos.index');
+    Route::post('/create', [documentosController::class, 'store'])->name('documentos.store');
+    Route::put('/update/{id}', [documentosController::class, 'update'])->name('documentos.update');
+    Route::post('/cambioEstado/{id}', [documentosController::class, 'cambioEstado'])->name('documentos.cambioEstado');
 });
+
+Route::post('/reportes/generar', [ReporteController::class, 'generarReporte'])->name('reportes.generar');
+
 
 require __DIR__ . '/auth.php';
