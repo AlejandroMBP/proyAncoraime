@@ -53,7 +53,8 @@ Route::prefix('/documentos')->group(function () {
     Route::post('/cambioEstado/{id}', [documentosController::class, 'cambioEstado'])->name('documentos.cambioEstado');
 });
 
-Route::post('/reportes/generar', [ReporteController::class, 'generarReporte'])->name('reportes.generar');
+Route::post('/reporte/pdf', [ReporteController::class, 'generarPDF'])->name('reporte.pdf');
+Route::post('/reporte/excel', [ReporteController::class, 'generarExcel'])->name('reporte.excel');
 
 
 require __DIR__ . '/auth.php';

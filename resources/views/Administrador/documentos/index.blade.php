@@ -266,20 +266,18 @@
                 });
             });
         });
+    </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var reporteModal = new bootstrap.Modal(document.getElementById('reporteModal'), {
+                keyboard: false
+            });
 
-
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     // Obtén el elemento del modal
-        //     var reporteModal = new bootstrap.Modal(document.getElementById('reporteModal'), {
-        //         keyboard: false // Opcional: Evitar que el modal cierre con la tecla Esc
-        //     });
-
-        //     // Abrir el modal cuando sea necesario
-        //     document.getElementById('openModalReporte').addEventListener('click', function() {
-        //         reporteModal.show(); // Muestra el modal
-        //     });
-        // });
+            document.getElementById('openModalReporte').addEventListener('click', function() {
+                reporteModal.show();
+            });
+        });
     </script>
 @endpush
 <style>
