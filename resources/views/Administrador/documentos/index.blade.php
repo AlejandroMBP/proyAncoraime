@@ -15,7 +15,7 @@
         </section>
 
         <!-- Pestañas -->
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        {{-- <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="documentos-tab" data-toggle="tab" href="#documentos" role="tab"
                     aria-controls="documentos" aria-selected="true">Documentos</a>
@@ -24,7 +24,7 @@
                 <a class="nav-link" id="reporte-tab" data-toggle="tab" href="#reporte" role="tab"
                     aria-controls="reporte" aria-selected="false">Reporte PDF</a>
             </li>
-        </ul>
+        </ul> --}}
 
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
@@ -32,8 +32,10 @@
                     <div class="card-header">
                         <div class="heading-title">
                             <button class="rounded-flexible-btn" id="openModalButton">Crear nuevo documento</button>
+                            <button class="rounded-flexible-btn" id="openModalReporte">Generar Reporte</button>
                         </div>
                     </div>
+
                     <div class="p-4">
                         <table id="documentosTable" class="table table-striped table-bordered dt-responsive nowrap"
                             style="width:100%">
@@ -41,7 +43,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Hoja de Ruta</th>
-                                    <th>Título</th>
+                                    <th>Descripcion de Documento</th>
                                     <th>Fecha</th>
                                     <th>ubicacion</th>
                                     <th>tipo de documento</th>
@@ -107,26 +109,16 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="reporte" role="tabpanel" aria-labelledby="reporte-tab">
-                <div class="card panel panel-default">
-                    <div class="card-header">
-                        <div class="heading-title">
-                            <button class="rounded-flexible-btn" id="openModalReporte">Generar Reporte</button>
-                        </div>
-                    </div>
-                    <div class="p-4 text-center" id="reporteContainer" style="display: none;">
-                        <div id="botonesReporte" class="btn-group" role="group" aria-label="Botones de reporte">
-                            <button type="button" class="rounded-flexible-btn" id="descargarPDF">
-                                <i class="fas fa-file-pdf"></i> Descargar PDF
-                            </button>
-                            <button type="button" class="rounded-flexible-btn" id="descargarExcel">
-                                <i class="fas fa-file-excel"></i> Descargar Excel
-                            </button>
-                        </div>
-                    </div>
+            <div class="p-4 text-center" id="reporteContainer" style="display: none;">
+                <div id="botonesReporte" class="btn-group" role="group" aria-label="Botones de reporte">
+                    <button type="button" class="rounded-flexible-btn" id="descargarPDF">
+                        <i class="fas fa-file-pdf"></i> Descargar PDF
+                    </button>
+                    <button type="button" class="rounded-flexible-btn" id="descargarExcel">
+                        <i class="fas fa-file-excel"></i> Descargar Excel
+                    </button>
                 </div>
             </div>
-
         </div>
     </div>
     @include('Administrador.documentos.vistapreiva')
@@ -277,6 +269,37 @@
             document.getElementById('openModalReporte').addEventListener('click', function() {
                 reporteModal.show();
             });
+        });
+    </script>
+
+    <script>
+        //ESTE SCRIPT ES PARA EL MANEJO DE LAS ALERTAS
+        document.addEventListener("DOMContentLoaded", function() {
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    },
+                    buttonsStyling: false
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: '¡Error!',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                });
+            @endif
         });
     </script>
 @endpush

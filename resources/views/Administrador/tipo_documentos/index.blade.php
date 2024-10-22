@@ -27,8 +27,8 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>descripcion</th>
-                                    <th>registrado por</th>
+                                    <th>Tipo de Documento</th>
+                                    <th>Registrado por</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>

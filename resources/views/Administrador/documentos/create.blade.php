@@ -248,7 +248,7 @@
 
                     </div>
                     <div class="mb-3">
-                        <label for="titulo" class="form-label">Título</label>
+                        <label for="titulo" class="form-label">Descripcion del Documento</label>
                         <input type="text" id="titulo" name="titulo" class="form-control"
                             placeholder="Ingrese título" required>
                     </div>
@@ -266,7 +266,7 @@
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-3">
-                            <label for="fecha" class="form-label">Fecha</label>
+                            <label for="fecha" class="form-label">Fecha Inicio de Tramite</label>
                             <input type="date" id="fecha" name="fecha" class="form-control" required>
                         </div>
                         <div class="col-md-3">
@@ -292,7 +292,7 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="ubicacion" class="form-label">Ubicación</label>
+                        <label for="ubicacion" class="form-label">Ubicación del Documento</label>
                         <input type="text" id="ubicacion" name="ubicacion" class="form-control"
                             placeholder="Ingrese ubicación" required>
                     </div>

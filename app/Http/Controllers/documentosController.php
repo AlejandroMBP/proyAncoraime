@@ -18,39 +18,44 @@ class documentosController extends Controller
     }
     public function store(Request $request)
     {
-        // Validar los datos de entrada
-        $validated = $request->validate([
-            'hojaDeRuta' => 'required|string|max:255',
-            'titulo' => 'required|string|max:255',
-            'documentoPDF' => 'required|mimes:pdf|max:2048',
-            'fecha' => 'required|date',
-            'categoria' => 'required|exists:tipos_documentos,id',
-            'cantidadFojas' => 'required|integer',
-            'nroCarpeta' => 'required|integer',
-            'ubicacion' => 'required|string|max:255',
-        ]);
+        try {
 
-        // Guardar el archivo PDF en el almacenamiento
-        if ($request->hasFile('documentoPDF')) {
-            $pdfPath = $request->file('documentoPDF')->store('documentos', 'public');
-        } else {
-            // Manejar el caso en que no se cargue el archivo
-            return redirect()->back()->withErrors(['documentoPDF' => 'El archivo PDF es requerido.']);
+            // Validar los datos de entrada
+            $validated = $request->validate([
+                'hojaDeRuta' => 'required|numeric',
+                'titulo' => 'required|string|max:255',
+                'documentoPDF' => 'required|mimes:pdf|max:2048',
+                'fecha' => 'required|date|after_or_equal:2000-01-01',
+                'categoria' => 'required|exists:tipos_documentos,id',
+                'cantidadFojas' => 'required|numeric|max:500',
+                'nroCarpeta' => 'required|numeric|max:1000',
+                'ubicacion' => 'required|string|max:255',
+            ]);
+
+            // Guardar el archivo PDF en el almacenamiento
+            if ($request->hasFile('documentoPDF')) {
+                $pdfPath = $request->file('documentoPDF')->store('documentos', 'public');
+            } else {
+                // Manejar el caso en que no se cargue el archivo
+                return redirect()->back()->withErrors(['documentoPDF' => 'El archivo PDF es requerido.']);
+            }
+
+            $documento = Documento::create([
+                'hoja_ruta' => $validated['hojaDeRuta'],
+                'titulo' => $validated['titulo'],
+                'documento_pdf' => $pdfPath,
+                'fecha' => $validated['fecha'],
+                'ubicacion' => $validated['ubicacion'],
+                'tipo_documento_id' => $validated['categoria'],
+                'cantidad_fojas' => $validated['cantidadFojas'],
+                'numero_carpeta' => $validated['nroCarpeta'],
+                'codigo_qr' => 'pruebas', // Establecer el valor del código QR como "prueba"
+                'usuario_id' => auth()->user()->id,
+            ]);
+            return redirect()->route('documentos.index')->with('success', 'se inserto documento exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => 'Error al crear el documento: ' . $e->getMessage()], 500);
         }
-
-        $documento = Documento::create([
-            'hoja_ruta' => $validated['hojaDeRuta'],
-            'titulo' => $validated['titulo'],
-            'documento_pdf' => $pdfPath,
-            'fecha' => $validated['fecha'],
-            'ubicacion' => $validated['ubicacion'],
-            'tipo_documento_id' => $validated['categoria'],
-            'cantidad_fojas' => $validated['cantidadFojas'],
-            'numero_carpeta' => $validated['nroCarpeta'],
-            'codigo_qr' => 'pruebas', // Establecer el valor del código QR como "prueba"
-            'usuario_id' => auth()->user()->id,
-        ]);
-        return redirect()->route('documentos.index')->with('success', 'se inserto documento exitosamente');
     }
     public function update(Request $request, $id)
     {
