@@ -54,10 +54,13 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $contador = 1;
+                                @endphp
                                 @foreach ($documentos as $documento)
                                     @if ($documento->estado == 1)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $contador }}</td>
                                             <td>{{ $documento->hoja_ruta }}</td>
                                             <td>{{ $documento->titulo }}</td>
                                             <td>{{ $documento->fecha }}</td>
@@ -87,7 +90,6 @@
                                                         data-pdf="{{ asset('storage/' . $documento->documento_pdf) }}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-
                                                     <button type="button" class="rounded-flexible-btn preview-button"
                                                         data-id="{{ $documento->id }}"
                                                         data-hojaruta="{{ $documento->hoja_ruta }}"
@@ -97,11 +99,12 @@
                                                         data-pdf="{{ asset('storage/' . $documento->documento_pdf) }}">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-
-
                                                 </div>
                                             </td>
                                         </tr>
+                                        @php
+                                            $contador++;
+                                        @endphp
                                     @endif
                                 @endforeach
                             </tbody>
@@ -128,15 +131,32 @@
 @endsection
 @push('links')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('assets/css/tables/datatables.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/tables/buttons.dataTables.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 @endpush
 @push('scripts')
     <!-- Incluir PDF.js desde un CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
+    <script>
+        new DataTable('#documentosTable', {
+            language: {
+                info: '',
+                infoEmpty: 'No se encontro registro',
+                infoFiltered: '',
+                lengthMenu: 'Paginas _MENU_',
+                zeroRecords: 'No se encontro registro',
+                search: 'Buscar',
+            }
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Obtén el elemento del modal

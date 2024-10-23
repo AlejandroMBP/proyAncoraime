@@ -308,6 +308,7 @@
 </div>
 
 <script>
+    //SCRIP
     const fileInput = document.getElementById('documentoPDF');
     const canvas = document.getElementById('pdfCanvas');
     const ctx = canvas.getContext('2d');

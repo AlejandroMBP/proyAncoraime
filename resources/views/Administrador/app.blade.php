@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 
 <!-- Mirrored from admin.perfectuswebinsights.com/pages/tables/basic.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 17 Sep 2024 20:23:09 GMT -->
