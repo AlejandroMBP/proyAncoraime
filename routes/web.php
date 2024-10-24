@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\documentosController;
+use App\Http\Controllers\impresionesController;
 use App\Http\Controllers\metricascontroller;
+use App\Http\Controllers\prestamosController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\tipoDocumentoController;
@@ -56,5 +58,12 @@ Route::prefix('/documentos')->group(function () {
 Route::post('/reporte/pdf', [ReporteController::class, 'generarPDF'])->name('reporte.pdf');
 Route::post('/reporte/excel', [ReporteController::class, 'generarExcel'])->name('reporte.excel');
 
-
+//rutas prestamos
+Route::prefix('/prestamos')->group(function () {
+    Route::get('/', [prestamosController::class, 'index'])->name('prestamos.index');
+});
+//rutas impresiones
+Route::prefix('/impresiones')->group(function () {
+    Route::get('/', [impresionesController::class, 'index'])->name('impresiones.index');
+});
 require __DIR__ . '/auth.php';
