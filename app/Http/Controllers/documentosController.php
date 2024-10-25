@@ -13,14 +13,13 @@ class documentosController extends Controller
     public function index()
     {
         $documentos = Documento::with('tipoDocumento', 'usuario')->get();
-        $tiposDocumentos = TipoDocumento::all(); // Obtener todos los tipos de documentos
+        $tiposDocumentos = TipoDocumento::all();
         return view('Administrador.documentos.index', compact('documentos', 'tiposDocumentos'));
     }
     public function store(Request $request)
     {
         try {
 
-            // Validar los datos de entrada
             $validated = $request->validate([
                 'hojaDeRuta' => 'required|numeric',
                 'titulo' => 'required|string|max:255',
@@ -32,11 +31,10 @@ class documentosController extends Controller
                 'ubicacion' => 'required|string|max:255',
             ]);
 
-            // Guardar el archivo PDF en el almacenamiento
             if ($request->hasFile('documentoPDF')) {
                 $pdfPath = $request->file('documentoPDF')->store('documentos', 'public');
             } else {
-                // Manejar el caso en que no se cargue el archivo
+
                 return redirect()->back()->withErrors(['documentoPDF' => 'El archivo PDF es requerido.']);
             }
 
@@ -49,7 +47,7 @@ class documentosController extends Controller
                 'tipo_documento_id' => $validated['categoria'],
                 'cantidad_fojas' => $validated['cantidadFojas'],
                 'numero_carpeta' => $validated['nroCarpeta'],
-                'codigo_qr' => 'pruebas', // Establecer el valor del código QR como "prueba"
+                'codigo_qr' => 'pruebas',
                 'usuario_id' => auth()->user()->id,
             ]);
             return redirect()->route('documentos.index')->with('success', 'se inserto documento exitosamente');
@@ -59,11 +57,10 @@ class documentosController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // Validar los datos de entrada
         $validated = $request->validate([
             'hojaDeRuta' => 'required|string|max:255',
             'titulo' => 'required|string|max:255',
-            'documentoPDF' => 'nullable|mimes:pdf|max:2048', // Puede ser nulo si no se actualiza
+            'documentoPDF' => 'nullable|mimes:pdf|max:2048',
             'fecha' => 'required|date',
             'categoria' => 'required|exists:tipos_documentos,id',
             'cantidadFojas' => 'required|integer',
@@ -71,10 +68,8 @@ class documentosController extends Controller
             'ubicacion' => 'required|string|max:255',
         ]);
 
-        // Buscar el documento existente
         $documento = Documento::findOrFail($id);
 
-        // Actualizar los campos
         $documento->hoja_ruta = $validated['hojaDeRuta'];
         $documento->titulo = $validated['titulo'];
         $documento->fecha = $validated['fecha'];
@@ -83,13 +78,12 @@ class documentosController extends Controller
         $documento->cantidad_fojas = $validated['cantidadFojas'];
         $documento->numero_carpeta = $validated['nroCarpeta'];
 
-        // Solo actualizar el documento PDF si se proporciona uno nuevo
         if ($request->hasFile('documentoPDF')) {
             $pdfPath = $request->file('documentoPDF')->store('documentos', 'public');
             $documento->documento_pdf = $pdfPath;
         }
 
-        $documento->save(); // Guardar los cambios
+        $documento->save();
 
         return redirect()->route('documentos.index')->with('success', 'Documento actualizado exitosamente.');
     }

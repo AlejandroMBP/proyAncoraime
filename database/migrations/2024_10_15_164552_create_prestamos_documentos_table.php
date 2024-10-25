@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('fecha_devolucion')->nullable();
             $table->text('descripcion');
             $table->string('devolucion')->default('no');
-            $table->int('estado')->default(1);
+            $table->integer('estado')->default(1);
             $table->unsignedBigInteger('usuario_id');
             $table->timestamps();
             // Establecer la clave foránea

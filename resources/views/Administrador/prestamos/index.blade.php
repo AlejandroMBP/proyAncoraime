@@ -4,7 +4,7 @@
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
-                Prestamos
+                Prestamos Documentos Originales
                 <small>Prestamo</small>
             </h1>
             <ol class="breadcrumb">
@@ -29,16 +29,71 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Titulo</th>
+                                    <th>Hoja de Ruta</th>
+                                    <th>Documento</th>
                                     <th>Fecha de prestamo</th>
                                     <th>Fecha de devolucion</th>
                                     <th>Funcionario</th>
-                                    <th>Devuelto</th>
+                                    <th>Devuelto?</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $contador = 1;
+                                @endphp
+                                @foreach ($documentos as $documento)
+                                    @if ($documento->estado == 1)
+                                        <tr>
+                                            <td>{{ $contador }}</td> <!-- Mostrar el contador -->
+                                            <td>{{ $documento->hoja_ruta }}</td>
+                                            <td>{{ $documento->documento->titulo }}</td> <!-- Título del documento -->
+                                            <td>{{ $documento->fecha_prestamo }}</td> <!-- Fecha de préstamo -->
+                                            <td>{{ $documento->fecha_devolucion }}</td> <!-- Fecha de devolución -->
+                                            <td>{{ $documento->funcionario->nombre }} {{ $documento->funcionario->paterno }}
+                                                {{ $documento->funcionario->materno }}</td>
+                                            <!-- Nombre completo del funcionario -->
+                                            <td>
+                                                <form action="{{ route('prestamos.update', $documento->id) }}"
+                                                    method="POST" class="d-inline" id="form-{{ $documento->id }}">
+                                                    @csrf
+                                                    @method('PUT') <!-- Indica que es una solicitud PUT -->
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                            id="flexSwitchCheck{{ $documento->id }}" name="devolucion"
+                                                            {{ $documento->devolucion == 'si' ? 'checked' : '' }}
+                                                            onchange="updateDevolucion({{ $documento->id }}, this.checked);">
+                                                    </div>
+                                                </form>
+                                            </td>
 
+                                            <!-- Mostrar si ha sido devuelto -->
+                                            <td>
+                                                <div class="btn-group" role="group"
+                                                    aria-label="Basic mixed styles example">
+                                                    <form action="" method="POST" class="formbtn">
+                                                        @csrf
+                                                        @method('DELETE') <!-- Método DELETE para la eliminación -->
+                                                        <button type="submit" class="rounded-flexible-btn delete-btn"><i
+                                                                class="fas fa-trash-alt"></i></button>
+                                                    </form>
+
+                                                    <button type="button" class="rounded-flexible-btn editbutton"
+                                                        data-id="{{ $documento->id }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" class="rounded-flexible-btn preview-button"
+                                                        data-id="{{ $documento->id }}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $contador++;
+                                        @endphp
+                                    @endif
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -56,20 +111,20 @@
     @include('Administrador.prestamos.create')
 @endsection
 @push('links')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 @endpush
 @push('scripts')
-    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> da conflictos con el scroll --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
     <script>
         //script del datatables
         new DataTable('#prestamo-table', {
@@ -94,6 +149,38 @@
                 modalPrestamo.show(); // Muestra el modal
             });
         });
+    </script>
+    <script>
+        function updateDevolucion(id, isChecked) {
+            // Crear la URL para la solicitud AJAX
+            const url = "{{ url('/prestamos') }}/" + id;
+
+            // Crear el dato a enviar
+            const data = {
+                _method: 'PUT', // Necesario para indicar que es una actualización
+                _token: '{{ csrf_token() }}', // Agrega el token CSRF
+                devolucion: isChecked ? 'si' : 'no' // Cambia el valor según el estado del switch
+            };
+
+            // Realiza la solicitud AJAX
+            fetch(url, {
+                    method: 'POST', // Se usa POST porque Laravel usa un método oculto para PUT
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}', // Asegúrate de incluir el token CSRF
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la actualización');
+                    }
+                    return response.json();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 @endpush
 <style>

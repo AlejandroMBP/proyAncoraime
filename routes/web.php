@@ -62,8 +62,9 @@ Route::post('/reporte/excel', [ReporteController::class, 'generarExcel'])->name(
 Route::prefix('/prestamos')->group(function () {
     Route::get('/', [prestamosController::class, 'index'])->name('prestamos.index');
     Route::get('/buscar-documento', [PrestamosController::class, 'buscar'])->name('prestamos.buscar');
-    Route::get('/buscar-funcionario',[PrestamosController::class, 'buscarfuncionario'])->name('prestamos.buscarFuncionario');
-    Route::post('/create',[prestamosController::class,'store'])->name('prestamos.store');
+    Route::get('/buscar-funcionario', [PrestamosController::class, 'buscarfuncionario'])->name('prestamos.buscarFuncionario');
+    Route::post('/create', [prestamosController::class, 'store'])->name('prestamos.store');
+    Route::put('/{id}', [prestamosController::class, 'update'])->name('prestamos.update');
 });
 //rutas impresiones
 Route::prefix('/impresiones')->group(function () {

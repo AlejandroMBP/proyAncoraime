@@ -1,4 +1,23 @@
 <style>
+    .is-valid {
+        border-color: #28a745;
+        /* Verde */
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+        /* Rojo */
+    }
+
+    .invalid-feedback {
+        display: none;
+    }
+
+    input:invalid~.invalid-feedback,
+    textarea:invalid~.invalid-feedback {
+        display: block;
+    }
+
     .modal-lg {
         max-width: 1000px;
         /* Ajusta este valor según tus necesidades */
@@ -231,7 +250,7 @@
     }
 </style>
 <div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <form action="{{ route('prestamos.store') }}" method="post" enctype="multipart/form-data">
+    <form id="prestamoForm" action="{{ route('prestamos.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="modal-dialog modal-lg">
             <div class="modal-content custom-modal">
@@ -244,49 +263,70 @@
                         <label for="documento" class="form-label">Documento</label>
                         <input type="text" id="documento" name="documento" class="form-control"
                             placeholder="Ingrese nombre del documento" required>
-                        <div id="documento-list" class="list-group">
-                        </div>
+                        <div id="documento-list" class="list-group"></div>
+                        <div class="invalid-feedback">Este campo es obligatorio.</div>
                     </div>
-                    <div class="mb-3
-                            row">
+                    <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="fechaPrestamo" class="form-label">Fecha de Préstamo</label>
-                            <input type="date" id="fechaPrestamo" name="fechaPrestamo" class="form-control" required>
+                            <input type="date" id="fechaPrestamo" name="fechaPrestamo" class="form-control"
+                                value="{{ date('Y-m-d') }}" required disabled>
+                            <input type="hidden" name="fechaPrestamoHidden" value="{{ date('Y-m-d') }}">
+                            <div class="invalid-feedback">La fecha de préstamo es obligatoria.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
                             <input type="date" id="fechaDevolucion" name="fechaDevolucion" class="form-control"
                                 required>
+                            <div class="invalid-feedback">La fecha de devolución es obligatoria.</div>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="hojaRuta" class="form-label">Hoja de Ruta del Funcionario</label>
                             <input type="text" id="hojaRuta" name="hojaRuta" class="form-control"
-                                placeholder="Ingrese hoja de ruta" required>
+                                placeholder="Ingrese hoja de ruta" required pattern="\d+">
+                            <div class="invalid-feedback">La hoja de ruta debe ser numérica.</div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 position-relative">
                             <label for="Funcionario" class="form-label">Funcionario</label>
-                            <input type="text" id="Funcionario" name="Funcionario" class="form-control"
-                                placeholder="Ingrese nombre del funcionario" required>
-                            <div id="funcionario-list" class="list-group"></div>
+                            <input type="text" id="FuncionarioInput" class="form-control"
+                                placeholder="Ingrese nombre del funcionario" onkeyup="filtrarFuncionarios()">
+                            <input type="hidden" id="FuncionarioId" name="funcionario_id">
+                            <div id="funcionario-list" class="list-group position-absolute w-100 mt-1"
+                                style="z-index: 1000; display: none;">
+                                <!-- Opciones de funcionarios se mostrarán aquí -->
+                                @foreach ($funcionario as $funcionarios)
+                                    <a href="javascript:void(0);" class="list-group-item list-group-item-action"
+                                        onclick="seleccionarFuncionario('{{ $funcionarios->nombre }} {{ $funcionarios->paterno }} {{ $funcionarios->materno }}')">
+                                        {{ $funcionarios->nombre }} {{ $funcionarios->paterno }}
+                                        {{ $funcionarios->materno }}
+                                    </a>
+                                @endforeach
+                            </div>
+                            <div class="invalid-feedback">Este campo es obligatorio.</div>
                         </div>
+
+
+
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
                         <textarea id="descripcion" name="descripcion" class="form-control" rows="3" placeholder="Ingrese descripción"
                             required></textarea>
+                        <div class="invalid-feedback">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="modal-footer custom-modal-footer">
                     <button type="button" class="btn btn-secondary custom-close-btn"
                         data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary custom-save-btn">Crear o Guardar</button>
+                    <button type="submit" class="btn btn-primary custom-save-btn" disabled>Crear o Guardar</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -339,55 +379,100 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
-        // Búsqueda de funcionarios
-        $('#Funcionario').on('input', function() {
-            var query = $(this).val();
-            if (query.length > 2) {
-                $.ajax({
-                    url: "{{ route('prestamos.buscarFuncionario') }}", // Ruta para buscar funcionarios
-                    type: 'GET',
-                    data: {
-                        query: query
-                    },
-                    success: function(data) {
-                        $('#funcionario-list')
-                            .empty(); // Limpiar la lista antes de añadir nuevos resultados
-                        if (data.length > 0) {
-                            $.each(data, function(index, funcionario) {
-                                // Añadir cada funcionario como un enlace seleccionable
-                                $('#funcionario-list').append(
-                                    '<a href="#" class="list-group-item list-group-item-action" data-id="' +
-                                    funcionario.id + '">' + funcionario.nombre +
-                                    ' ' + funcionario.paterno + ' ' +
-                                    funcionario.materno + '</a>');
-                            });
-                        } else {
-                            $('#funcionario-list').append(
-                                '<div class="list-group-item">No se encontraron funcionarios</div>'
-                            );
-                        }
-                    }
-                });
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('Funcionario');
+        const funcionarioListItems = document.querySelectorAll('.list-group-item');
+
+        input.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+
+            funcionarioListItems.forEach(function(item) {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function filtrarFuncionarios() {
+        const input = document.getElementById('FuncionarioInput').value.toLowerCase();
+        const list = document.getElementById('funcionario-list');
+        const items = list.getElementsByClassName('list-group-item');
+
+        let hasMatch = false;
+
+        for (let i = 0; i < items.length; i++) {
+            const itemText = items[i].textContent.toLowerCase();
+            if (itemText.includes(input)) {
+                items[i].style.display = ''; // Muestra el item
+                hasMatch = true;
             } else {
-                $('#funcionario-list').empty(); // Limpiar la lista si hay menos de 3 caracteres
+                items[i].style.display = 'none'; // Oculta el item
             }
+        }
+
+        // Muestra el panel si hay coincidencias; de lo contrario, lo oculta
+        list.style.display = hasMatch ? 'block' : 'none';
+    }
+
+    function seleccionarFuncionario(nombreCompleto) {
+        // Asigna el nombre seleccionado al input y oculta la lista
+        document.getElementById('FuncionarioInput').value = nombreCompleto;
+        document.getElementById('funcionario-list').style.display = 'none';
+    }
+
+    // Ocultar el desplegable si se hace clic fuera del área de búsqueda
+    document.addEventListener('click', function(event) {
+        const list = document.getElementById('funcionario-list');
+        const input = document.getElementById('FuncionarioInput');
+        if (!list.contains(event.target) && event.target !== input) {
+            list.style.display = 'none';
+        }
+    });
+
+    function seleccionarFuncionario(nombreCompleto, id) {
+        // Asigna el nombre seleccionado al input y el id al campo oculto
+        document.getElementById('FuncionarioInput').value = nombreCompleto;
+        document.getElementById('FuncionarioId').value = id;
+        document.getElementById('funcionario-list').style.display = 'none';
+    }
+</script>
+
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const prestamoForm = document.getElementById('prestamoForm');
+        const submitButton = prestamoForm.querySelector('.custom-save-btn');
+        const fechaPrestamo = document.getElementById('fechaPrestamo');
+        const today = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        fechaPrestamo.value = today;
+
+        // Validar los campos al cambiar
+        prestamoForm.addEventListener('input', function(event) {
+            const target = event.target;
+            if (target.checkValidity()) {
+                target.classList.remove('is-invalid');
+                target.classList.add('is-valid');
+            } else {
+                target.classList.remove('is-valid');
+                target.classList.add('is-invalid');
+            }
+            toggleSubmitButton();
         });
 
-        // Capturar el clic en una opción de la lista
-        $(document).on('click', '#funcionario-list a', function(e) {
-            e.preventDefault(); // Evitar que el enlace haga su comportamiento por defecto
-
-            // Obtener el nombre del funcionario seleccionado
-            var funcionarioNombre = $(this).text();
-            var funcionarioId = $(this).data(
-                'id'); // ID del funcionario (si lo necesitas para el backend)
-
-            // Llenar el campo de texto con el nombre seleccionado
-            $('#Funcionario').val(funcionarioNombre);
-
-            // Limpiar la lista de resultados después de la selección
-            $('#funcionario-list').empty();
-        });
+        // Función para habilitar o deshabilitar el botón de envío
+        function toggleSubmitButton() {
+            const allValid = [...prestamoForm.elements].every(input => input.checkValidity());
+            submitButton.disabled = !allValid;
+        }
     });
 </script>
