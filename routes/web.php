@@ -32,11 +32,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     ///
-    Route::get('/cargos',[CargoController::class,'index'])->name('administrador.cargos.listar');
-    Route::get('/cargos',[CargoController::class,'modificar'])->name('administrador.cargos.modificar');
-    Route::get('/cargos',[CargoController::class,'eliminar'])->name('administrador.cargos.eliminar');
+    Route::get('/cargos', [CargoController::class, 'index'])->name('administrador.cargos.listar');
+    // Route::post('/cargos',[CargoController::class,'store'])->name('administrador.cargos.listar');
+    Route::resource('/cargos', CargoController::class);
 });
-
 
 
 require __DIR__ . '/auth.php';

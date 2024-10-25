@@ -18,6 +18,7 @@
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="{{ asset('../../assets/css/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('../../assets/css/elements/modals.css') }}">
     <!-- Custom CSS Starts -->
     <link rel="stylesheet" href="{{ asset('../../assets/css/skin/all-skins.css') }}">
     <link rel="stylesheet" href="{{ asset('../../assets/css/general/style.css') }}">
@@ -37,25 +38,31 @@
         <!-- Sidebar Section Ends -->
 
         <!-- Page Content Starts-->
-        @yield('contenido')
+            @yield('contenido')
         <!-- Page Content Ends -->
-
-
+        <!-- Back to Top Starts -->
+        <a href="javascript:" id="return-to-top"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
+        <!-- Back to Top Ends -->
         @include('Administrador.layout.footer')
-
-
     </div>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
+
     <script src="{{ asset('../../assets/js/jquery/slim.min.js') }}"></script>
-    <!-- Popper.JS -->
-    <script src="{{ asset('../../assets/js/jquery/popper.min.js') }}"></script>
-    <!-- Bootstrap JS -->
-    <script src="{{ asset('../../assets/js/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('../../assets/js/bootstrap/bootstrap.min.js') }}"></script>
-    <!-- Theme JS -->
-    <script src="{{ asset('../../assets/js/nanoscroller/nanoscroller.js') }}"></script>
-    <script src="{{ asset('../../assets/js/custom/theme.js') }}"></script>
+	<!-- Popper.JS -->
+	<script src="{{ asset('../../assets/js/jquery/popper.min.js') }}"></script>
+	<!-- Bootstrap JS -->
+	<script src="{{ asset('../../assets/js/jquery/jquery.min.js') }}"></script>
+	<script src="{{ asset('../../assets/js/bootstrap/bootstrap.min.js') }}"></script>
+	<!-- Page JS -->
+	<script src="{{ asset('../../assets/js/elements/modals/velocity.min.js') }}"></script>
+	<script src="{{ asset('../../assets/js/elements/modals/velocity.ui.min.js') }}"></script>
+	<!-- Theme JS -->
+	<script src="{{ asset('../../assets/js/nanoscroller/nanoscroller.js') }}"></script>
+	<script src="{{ asset('../../assets/js/custom/theme.js') }}"></script>
+	<script type="text/javascript">
+	$(".modal").each(function(l){$(this).on("show.bs.modal",function(l){var o=$(this).attr("data-easein");"shake"==o?$(".modal-dialog").velocity("callout."+o):"pulse"==o?$(".modal-dialog").velocity("callout."+o):"tada"==o?$(".modal-dialog").velocity("callout."+o):"flash"==o?$(".modal-dialog").velocity("callout."+o):"bounce"==o?$(".modal-dialog").velocity("callout."+o):"swing"==o?$(".modal-dialog").velocity("callout."+o):$(".modal-dialog").velocity("transition."+o)})});
+	</script>
     @stack('scripts')
 </body>
 
