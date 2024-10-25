@@ -19,14 +19,14 @@ return new class extends Migration
             $table->unsignedBigInteger('funcionario_id');
             $table->date('fecha_devolucion')->nullable();
             $table->text('descripcion');
-            
-            $table->string('estado'); 
+            $table->string('devolucion')->default('no');
+            $table->int('estado')->default(1);
             $table->unsignedBigInteger('usuario_id');
             $table->timestamps();
             // Establecer la clave foránea
-            $table->foreign('documento_id')->references('id')->on('documentos')->onDelete('cascade'); 
-            $table->foreign('funcionario_id')->references('id')->on('funcionarios')->onDelete('cascade');  
-            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade'); 
+            $table->foreign('documento_id')->references('id')->on('documentos')->onDelete('cascade');
+            $table->foreign('funcionario_id')->references('id')->on('funcionarios')->onDelete('cascade');
+            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

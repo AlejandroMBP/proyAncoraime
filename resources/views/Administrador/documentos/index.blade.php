@@ -14,18 +14,6 @@
             </ol>
         </section>
 
-        <!-- Pestañas -->
-        {{-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="documentos-tab" data-toggle="tab" href="#documentos" role="tab"
-                    aria-controls="documentos" aria-selected="true">Documentos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="reporte-tab" data-toggle="tab" href="#reporte" role="tab"
-                    aria-controls="reporte" aria-selected="false">Reporte PDF</a>
-            </li>
-        </ul> --}}
-
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
                 <div class="card panel panel-default">
@@ -151,7 +139,7 @@
                 info: '',
                 infoEmpty: 'No se encontro registro',
                 infoFiltered: '',
-                lengthMenu: 'Paginas _MENU_',
+                lengthMenu: 'Paginas  _MENU_',
                 zeroRecords: 'No se encontro registro',
                 search: 'Buscar',
             }
