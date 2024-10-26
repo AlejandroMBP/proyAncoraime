@@ -1,4 +1,4 @@
-<form id="formReporte" method="POST" action="{{ route('reporte.pdf') }}">
+<form id="formReporte" method="POST" action="{{ route('reporte.pdf') }}" target="_blank">
     @csrf
     <div class="modal fade" id="reporteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

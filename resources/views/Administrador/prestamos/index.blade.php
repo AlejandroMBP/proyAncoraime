@@ -42,7 +42,7 @@
                     <div class="card-header">
                         <div class="heading-title">
                             <button class="rounded-flexible-btn" id="openModalPrestamo">Nuevo Prestamo</button>
-                            <button class="rounded-flexible-btn" id="openModalReporte">Generar Reporte</button>
+                            <button class="rounded-flexible-btn" id="openModalReportePrestamo">Generar Reporte</button>
                         </div>
                     </div>
 
@@ -98,9 +98,10 @@
                                             <td>
                                                 <div class="btn-group" role="group"
                                                     aria-label="Basic mixed styles example">
-                                                    <form action="" method="POST" class="formbtn">
+                                                    <form action="{{ route('prestamos.cambioEstado', $documento->id) }}"
+                                                        method="POST" class="formbtn"
+                                                        onsubmit="return confirmDelete(event)">
                                                         @csrf
-                                                        @method('DELETE') <!-- Método DELETE para la eliminación -->
                                                         <button type="submit" class="rounded-flexible-btn delete-btn"><i
                                                                 class="fas fa-trash-alt"></i></button>
                                                     </form>
@@ -112,8 +113,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <button id="ver" type="button"
-                                                        class="rounded-flexible-btn preview-button"
+                                                    <button type="button" class="rounded-flexible-btn preview-button ver"
                                                         data-id="{{ $documento->id }}">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
@@ -144,30 +144,36 @@
     <!-- Modal para editar devolución -->
     <div class="modal fade" id="editDevolucionModal" tabindex="-1" aria-labelledby="editDevolucionLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog "> <!-- Añadido modal-lg -->
+            <div class="modal-content custom-modal"> <!-- Aplicando la clase custom-modal -->
                 <form id="editDevolucionForm">
-                    <div class="modal-header">
+                    <div class="modal-header custom-modal-header"> <!-- Aplicando la clase custom-modal-header -->
                         <h5 class="modal-title" id="editDevolucionLabel">Editar Fecha de Devolución</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body custom-modal-body"> <!-- Aplicando la clase custom-modal-body -->
                         <input type="hidden" id="documento_id" name="documento_id">
                         <div class="mb-3">
                             <label for="fecha_devolucion" class="form-label">Fecha de Devolución</label>
                             <input type="date" class="form-control" id="fecha_devolucion" name="fecha_devolucion">
+                            @error('fecha_devolucion')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <div class="modal-footer custom-modal-footer"> <!-- Aplicando la clase custom-modal-footer -->
+                        <button type="button" class="btn btn-secondary custom-close-btn"
+                            data-bs-dismiss="modal">Cerrar</button> <!-- Aplicando la clase custom-close-btn -->
+                        <button type="submit" class="custom-save-btn-lin">Guardar cambios</button>
+                        <!-- Aplicando la clase custom-save-btn -->
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
+    @include('Administrador.prestamos.reporte')
     @include('Administrador.prestamos.create')
+    @include('Administrador.prestamos.vista')
 @endsection
 @push('links')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -184,9 +190,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
+    {{-- Inicializar DataTable solo una vez --}}
     <script>
         $(document).ready(function() {
-            // Inicializar DataTable solo una vez
+            //
             var table = new DataTable('#prestamo-table', {
                 language: {
                     info: 'Páginas _PAGE_ de _PAGES_',
@@ -198,8 +205,10 @@
                 }
             });
         });
-
-        //script de apertura de modal de creacion
+    </script>
+    {{-- script de apertura de modal de creacion --}}
+    <script>
+        //
         document.addEventListener('DOMContentLoaded', function() {
             // Obtén el elemento del modal
             var modalPrestamo = new bootstrap.Modal(document.getElementById('modalPrestamo'), {
@@ -212,24 +221,22 @@
             });
         });
     </script>
+    {{-- SCRIPT PARA MODIFICAR POR AJAX EL BOTON DE DEVOLUCION --}}
     <script>
+        //
         function updateDevolucion(id, isChecked) {
-            // Crear la URL para la solicitud AJAX
             const url = "{{ url('/prestamos') }}/" + id;
 
-            // Crear el dato a enviar
             const data = {
-                _method: 'PUT', // Necesario para indicar que es una actualización
-                _token: '{{ csrf_token() }}', // Agrega el token CSRF
-                devolucion: isChecked ? 'si' : 'no' // Cambia el valor según el estado del switch
+                _method: 'PUT',
+                _token: '{{ csrf_token() }}',
+                devolucion: isChecked ? 'si' : 'no'
             };
-
-            // Realiza la solicitud AJAX
             fetch(url, {
-                    method: 'POST', // Se usa POST porque Laravel usa un método oculto para PUT
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}', // Asegúrate de incluir el token CSRF
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     },
                     body: JSON.stringify(data)
                 })
@@ -244,7 +251,9 @@
                 });
         }
     </script>
+    {{-- FUNCION Y EDIT PARA LA FECHA DE DEVOLUCION --}}
     <script>
+        //
         document.addEventListener("DOMContentLoaded", function() {
             // Captura de todos los botones de edición
             const editButtons = document.querySelectorAll(".editButton");
@@ -334,8 +343,138 @@
             });
         });
     </script>
+    {{-- MODAL DE LA VISTA PREVIA DE LOS DATOS DE CADA REGISTRO --}}
+    <script>
+        //
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona todos los botones "ver"
+            const botonesVer = document.querySelectorAll('.preview-button');
+
+            botonesVer.forEach(button => {
+                button.addEventListener('click', function() {
+                    const documentoId = this.getAttribute('data-id');
+                    console.log('ID del documento:',
+                        documentoId); // Verifica que se obtenga el ID correctamente
+
+                    // Hacer una solicitud AJAX para obtener los detalles del préstamo
+                    fetch(`/prestamos/show/${documentoId}`) // Cambia la ruta según tu configuración
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la respuesta del servidor');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Datos del préstamo:',
+                                data); // Verifica que se obtengan los datos correctamente
+
+                            // Rellenar el modal con los datos del préstamo
+                            document.getElementById('hoja_ruta').innerText = data.hoja_ruta;
+
+                            document.getElementById('fecha_prestamo').innerText = data
+                                .fecha_prestamo;
+                            document.getElementById('campo-fecha_devolucion').innerText = data
+                                .fecha_devolucion;
+                            document.getElementById('funcionario').innerText =
+                                `${data.funcionario.nombre} ${data.funcionario.paterno} ${data.funcionario.materno}`;
+
+                            document.getElementById('campo-descripcion').innerText = data
+                                .descripcion || 'N/A';
+                            // console.log(data.fecha_devolucion);
+                            document.getElementById('devolucion').innerText = data
+                                .devolucion === 'si' ? 'Devolución realizada' :
+                                'No devolvió'; // Ajusta según tu lógica
+
+
+                            // Mostrar el modal utilizando Bootstrap 5
+                            const modal = new bootstrap.Modal(document.getElementById(
+                                'viewPrestamoModal'));
+                            modal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error al obtener los detalles del préstamo:', error);
+                        });
+                });
+            });
+        });
+    </script>
+    {{-- APERTURA DEL MODAL DE REPORTES --}}
+    <script>
+        //APERTURA DEL MODAL DE REPORTES
+        document.addEventListener('DOMContentLoaded', function() {
+            var reportePrestamoModal = new bootstrap.Modal(document.getElementById('reportePrestamoModal'), {
+                keyboard: false
+            });
+
+            document.getElementById('openModalReportePrestamo').addEventListener('click', function() {
+                reportePrestamoModal.show();
+            });
+        });
+    </script>
+    {{-- cuestion para cambio de estado --}}
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault(); // Previene el envío del formulario inmediato
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "¿Estás seguro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminarlo!",
+                cancelButtonText: "No, cancelar!",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si se confirma, se envía el formulario
+                    event.target.submit(); // Aquí se envía el formulario
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelado",
+                        text: "Tu archivo está a salvo :)",
+                        icon: "error"
+                    });
+                }
+            });
+
+            return false; // Para asegurarnos de que no se envía el formulario hasta que se confirme
+        }
+    </script>
 @endpush
 <style>
+    /* Estilo para los botones de SweetAlert2 */
+    .swal2-confirm,
+    .swal2-cancel {
+        margin: 5px;
+        /* Espaciado entre los botones */
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        /* Animación para el efecto hover */
+    }
+
+    /* Efecto hover para el botón de confirmación */
+    .swal2-confirm:hover {
+        background-color: #28a745;
+        /* Cambia el color de fondo al pasar el mouse */
+        transform: scale(1.05);
+        /* Efecto de aumento */
+    }
+
+    /* Efecto hover para el botón de cancelación */
+    .swal2-cancel:hover {
+        background-color: #dc3545;
+        /* Cambia el color de fondo al pasar el mouse */
+        transform: scale(1.05);
+        /* Efecto de aumento */
+    }
+
     .rounded-flexible-btn {
         background: linear-gradient(to right, #007bff, #20c997);
         color: white;
@@ -418,5 +557,226 @@
         align-items: center;
         margin: 0;
         /* Elimina márgenes que puedan desalinear los botones */
+    }
+</style>
+<style>
+    .modal-lg {
+        max-width: 1000px;
+        /* Ajusta este valor según tus necesidades */
+    }
+
+    .custom-modal {
+        background: linear-gradient(135deg, #007bff, #20c997);
+        border-radius: 15px;
+        /* Bordes redondeados */
+        color: white;
+        /* Texto blanco */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        /* Sombra suave */
+        border: none;
+        /* Sin bordes */
+    }
+
+    .custom-modal-header {
+        border-bottom: none;
+        /* Sin borde inferior */
+    }
+
+    .custom-modal-body {
+        background-color: white;
+        /* Fondo blanco para buen contraste con el texto */
+        color: #333;
+        /* Texto oscuro */
+        padding: 20px;
+        /* Espaciado interno */
+        border-radius: 0 0 15px 15px;
+        /* Redondeado inferior para el cuerpo del modal */
+    }
+
+    .custom-modal-footer {
+        background-color: transparent;
+        /* Fondo transparente para un look minimalista */
+        border-top: none;
+        /* Sin borde superior */
+    }
+
+    .form-select {
+        height: calc(2.25rem + 2px);
+        /* Altura ajustada para que coincida con otros campos */
+        padding: .375rem .75rem;
+        /* Espaciado interno */
+        font-size: 1rem;
+        /* Tamaño de fuente */
+        background: transparent;
+        /* Fondo transparente */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        /* Borde sutil */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        background-image: linear-gradient(to bottom right, rgba(0, 123, 255, 0.3), rgba(0, 255, 255, 0.3));
+        /* Degradado azul a turquesa */
+        color: #000;
+        /* Color del texto */
+        transition: border-color 1s ease, background-color 1s ease;
+        /* Transición suave para el color del borde y el fondo */
+    }
+
+    .form-select:focus {
+        background: transparent;
+        /* Mantener fondo transparente en foco */
+        border-color: rgba(0, 123, 255, 0.8);
+        /* Cambiar el color del borde en foco */
+        outline: none;
+        /* Sin contorno en el foco */
+    }
+
+    .form-select:hover {
+        transition: 0.5s;
+        background-color: rgba(0, 123, 255, 0.2);
+        /* Cambiar el fondo al pasar el cursor */
+        border-color: rgba(0, 255, 255, 0.6);
+        /* Cambiar el color del borde al pasar el cursor */
+    }
+
+    .form-label {
+        margin-bottom: .5rem;
+        /* Espaciado entre la etiqueta y el campo */
+    }
+
+    .row {
+        margin-bottom: 1rem;
+        /* Espaciado entre filas */
+    }
+
+    .custom-close-btn,
+    .custom-save-btn-lin {
+        background-color: white;
+        /* Botón blanco minimalista */
+        border: 1px solid #007bff;
+        /* Borde fino azul */
+        border-radius: 50px;
+        /* Botón redondeado */
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        /* Transición suave */
+    }
+
+    .custom-close-btn:hover {
+        background-color: rgb(0, 194, 253);
+        /* Cambiar a azul en hover */
+        color: white;
+        /* Texto blanco en hover */
+        box-shadow: 0 0 15px rgb(25, 243, 177);
+        /* Resplandor turquesa suave */
+    }
+
+    .custom-save-btn-lin {
+        color: #20c997;
+        /* Texto turquesa */
+        border: 1px solid #20c997;
+        /* Borde fino turquesa */
+    }
+
+    .custom-save-btn-lin:hover {
+        background-color: #20c997;
+        /* Cambiar a turquesa en hover */
+        color: white;
+        /* Texto blanco en hover */
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+        /* Resplandor azul suave */
+    }
+
+    /* Estilos minimalistas del modal */
+    .custom-modal {
+        background: linear-gradient(135deg, #007bff, #20c997);
+        /* Degradado azul a turquesa */
+        border-radius: 15px;
+        /* Bordes redondeados */
+        color: white;
+        /* Texto blanco */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        /* Sombra suave */
+        border: none;
+        /* Sin bordes */
+    }
+
+    /* Estilo para el encabezado del modal */
+    .custom-modal-header {
+        border-bottom: none;
+        /* Sin borde inferior */
+    }
+
+    /* Estilo para el cuerpo del modal */
+    .custom-modal-body {
+        background-color: white;
+        /* Fondo blanco para buen contraste con el texto */
+        color: #333;
+        /* Texto oscuro */
+        padding: 20px;
+        border-radius: 0 0 15px 15px;
+        /* Redondeado inferior para el cuerpo del modal */
+    }
+
+    /* Estilo para el pie del modal */
+    .custom-modal-footer {
+        background-color: transparent;
+        /* Fondo transparente para un look minimalista */
+        border-top: none;
+        /* Sin borde superior */
+    }
+
+    /* Estilo para el botón de "Cerrar" */
+    .custom-close-btn {
+        background-color: white;
+        /* Botón blanco minimalista */
+        color: #007bff;
+        /* Texto azul */
+        border: 1px solid #007bff;
+        /* Borde fino azul */
+        border-radius: 50px;
+        /* Botón redondeado */
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        /* Transición suave */
+    }
+
+    .custom-close-btn:hover {
+        transition: 0.8s;
+        background-color: rgb(0, 194, 253);
+        /* Cambiar a azul en hover  #007bff*/
+        color: white;
+        /* Texto blanco en hover */
+        box-shadow: 0 0 15px rgb(25, 243, 177);
+        /* Resplandor turquesa suave */
+
+    }
+
+    /* Estilo para el botón de "Guardar cambios" */
+    .custom-save-btn {
+        background-color: white;
+        /* Botón blanco minimalista */
+        color: #20c997;
+        /* Texto turquesa */
+        border: 1px solid #20c997;
+        /* Borde fino turquesa */
+        border-radius: 50px;
+        /* Botón redondeado */
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .custom-save-btn:hover {
+        background-color: #20c997;
+        /* Cambiar a turquesa en hover */
+        color: white;
+        /* Texto blanco en hover */
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+        /* Resplandor azul suave */
+    }
+
+    /* Ajuste general para los botones */
+    .custom-modal-footer .btn {
+        border-radius: 50px;
+        /* Bordes redondeados */
     }
 </style>

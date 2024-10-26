@@ -37,7 +37,8 @@ class DocumentosExport implements FromCollection, WithHeadings, WithMapping, Wit
         return Documento::where('fecha', '>=', $this->fechaDesde)
             ->where('fecha', '<=', $this->fechaHasta)
             ->where('tipo_documento_id', $this->tipoDocumentoId)
-            ->with('tipoDocumento')
+            ->where('estado', '<>', 0) // Excluye documentos con estado igual a 0
+            ->with('tipoDocumento') // Incluye la relación tipoDocumento
             ->get();
     }
 

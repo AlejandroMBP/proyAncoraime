@@ -249,7 +249,8 @@
         /* Bordes redondeados */
     }
 </style>
-<div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    @if ($errors->any()) style="display: block;" @endif>
     <form id="prestamoForm" action="{{ route('prestamos.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="modal-dialog modal-lg">
@@ -262,9 +263,11 @@
                     <div class="mb-3">
                         <label for="documento" class="form-label">Documento</label>
                         <input type="text" id="documento" name="documento" class="form-control"
-                            placeholder="Ingrese nombre del documento" required>
+                            placeholder="Ingrese nombre del documento" required value="{{ old('documento') }}">
                         <div id="documento-list" class="list-group"></div>
-                        <div class="invalid-feedback">Este campo es obligatorio.</div>
+                        @error('documento')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-6">
@@ -272,27 +275,35 @@
                             <input type="date" id="fechaPrestamo" name="fechaPrestamo" class="form-control"
                                 value="{{ date('Y-m-d') }}" required disabled>
                             <input type="hidden" name="fechaPrestamoHidden" value="{{ date('Y-m-d') }}">
-                            <div class="invalid-feedback">La fecha de préstamo es obligatoria.</div>
+                            @error('fechaPrestamoHidden')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
                             <input type="date" id="fechaDevolucion" name="fechaDevolucion" class="form-control"
-                                required>
-                            <div class="invalid-feedback">La fecha de devolución es obligatoria.</div>
+                                required value="{{ old('fechaDevolucion') }}">
+                            @error('fechaDevolucion')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="hojaRuta" class="form-label">Hoja de Ruta del Funcionario</label>
                             <input type="text" id="hojaRuta" name="hojaRuta" class="form-control"
-                                placeholder="Ingrese hoja de ruta" required pattern="\d+">
-                            <div class="invalid-feedback">La hoja de ruta debe ser numérica.</div>
+                                placeholder="Ingrese hoja de ruta" required pattern="\d+"
+                                value="{{ old('hojaRuta') }}">
+                            @error('hojaRuta')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6 position-relative">
                             <label for="Funcionario" class="form-label">Funcionario</label>
                             <input type="text" id="FuncionarioInput" class="form-control"
                                 placeholder="Ingrese nombre del funcionario" onkeyup="filtrarFuncionarios()">
-                            <input type="hidden" id="FuncionarioId" name="funcionario_id">
+                            <input type="hidden" id="FuncionarioId" name="funcionario_id"
+                                value="{{ old('funcionario_id') }}">
                             <div id="funcionario-list" class="list-group position-absolute w-100 mt-1"
                                 style="z-index: 1000; display: none;">
                                 <!-- Opciones de funcionarios se mostrarán aquí -->
@@ -304,27 +315,54 @@
                                     </a>
                                 @endforeach
                             </div>
-                            <div class="invalid-feedback">Este campo es obligatorio.</div>
+                            @error('funcionario_id')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
                         <textarea id="descripcion" name="descripcion" class="form-control" rows="3" placeholder="Ingrese descripción"
-                            required></textarea>
-                        <div class="invalid-feedback">Este campo es obligatorio.</div>
+                            required>{{ old('descripcion') }}</textarea>
+                        @error('descripcion')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="modal-footer custom-modal-footer">
                     <button type="button" class="btn btn-secondary custom-close-btn"
                         data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary custom-save-btn" disabled>Crear o Guardar</button>
+                    <button type="submit" class="btn btn-primary custom-save-btn">Crear o Guardar</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- SCRIP PARA LAS VALIDACIONES DE REGISTRO --}}
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('modalPrestamo'));
+            modal.show();
+        });
+    </script>
+@endif
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (session('success'))
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        @endif
+    });
+</script>
+
+{{-- FIN DE SECCION DE VALIDACION --}}
 <script>
     $(document).ready(function() {
         $('#documento').on('input', function() {
@@ -437,8 +475,8 @@
         }
     });
 </script>
-
-<script>
+{{-- !CUIDADO CON ESTOS SCRIPTS !!! --}}
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         const inputFuncionario = document.getElementById('FuncionarioInput');
         const submitButton = document.querySelector('.custom-save-btn');
@@ -453,9 +491,9 @@
         inputFuncionario.addEventListener('input', toggleSubmitButton);
         toggleSubmitButton(); // Verifica el estado al cargar la página
     });
-</script>
+</script> --}}
 
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         const prestamoForm = document.getElementById('prestamoForm');
         const submitButton = prestamoForm.querySelector('.custom-save-btn');
@@ -482,7 +520,7 @@
             submitButton.disabled = !allValid;
         }
     });
-</script>
+</script> --}}
 
 <script>
     $(document).ready(function() {
@@ -501,7 +539,5 @@
                 $('#documento-list').empty(); // Limpia la lista si no hay entrada
             }
         });
-
-        // Tu lógica existente para filtrar funcionarios
     });
 </script>

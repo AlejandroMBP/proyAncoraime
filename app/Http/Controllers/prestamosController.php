@@ -13,9 +13,10 @@ class prestamosController extends Controller
 {
     public function index()
     {
+        $nombreDocumento = Documento::all();
         $documentos = PrestamoDocumento::all();
         $funcionario = Funcionario::all();
-        return view('Administrador.prestamos.index', compact('documentos', 'funcionario'));
+        return view('Administrador.prestamos.index', compact('documentos', 'funcionario', 'nombreDocumento'));
     }
     public function buscar(Request $request)
     {
@@ -23,6 +24,7 @@ class prestamosController extends Controller
         $documentos = Documento::where('titulo', 'LIKE', "%{$query}%")->get();
         return response()->json($documentos);
     }
+
     public function buscarfuncionario(Request $request)
     {
         $query = $request->input('query');
@@ -32,9 +34,9 @@ class prestamosController extends Controller
             ->get();
         return response()->json($funcionario);
     }
+
     public function store(Request $request)
     {
-        // Definir reglas de validación
         $rules = [
             'hojaRuta' => 'required',
             'documento' => 'required',
@@ -44,7 +46,6 @@ class prestamosController extends Controller
             'descripcion' => 'required',
         ];
 
-        // Mensajes de error personalizados
         $messages = [
             'hojaRuta.required' => 'El campo Hoja de Ruta es obligatorio.',
             'documento.required' => 'El campo Documento es obligatorio.',
@@ -78,7 +79,7 @@ class prestamosController extends Controller
 
             return redirect()->route('prestamos.index')->with('success', 'Préstamo registrado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Hubo un error al registrar el préstamo: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Hubo un error al registrar el préstamo: ' .  $e->getMessage())->withInput();
         }
     }
 
@@ -102,18 +103,50 @@ class prestamosController extends Controller
 
     public function actualizar(Request $request, $id)
     {
-        $request->validate([
-            'fecha_devolucion' => 'required|date',
-            // otras validaciones si es necesario
-        ]);
+        try {
+            $request->validate([
+                'fecha_devolucion' => 'required|date|after_or_equal:' . Carbon::today()->toDateString(),
+            ], [
+                'fecha_devolucion.after_or_equal' => 'Este campo no puede ser una fecha inferior a la actual.',
+            ]);
 
-        // Encontrar el préstamo por ID y actualizarlo
-        $prestamo = PrestamoDocumento::findOrFail($id);
-        $prestamo->fecha_devolucion = $request->fecha_devolucion;
-        // Actualiza otros campos según sea necesario
-        $prestamo->save();
-        //return redirect()->route('prestamos.index')->with('success', 'fecha cambiada exitosamente');
-        //return response()->json(['success' => true, 'message' => 'Fecha de devolución actualizada con éxito.']);
-        return response()->json(['success' => true, 'message' => 'Fecha de devolución actualizada con éxito.']);
+            $prestamo = PrestamoDocumento::findOrFail($id);
+            $prestamo->fecha_devolucion = $request->fecha_devolucion;
+            $prestamo->save();
+
+            return response()->json(['success' => true, 'message' => 'Fecha de devolución actualizada con éxito.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Ocurrió un error al actualizar la fecha de devolución: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $prestamo = PrestamoDocumento::with(['funcionario', 'documento'])->findOrFail($id);
+
+            return response()->json([
+                'hoja_ruta' => $prestamo->hoja_ruta,
+                'fecha_prestamo' => $prestamo->fecha_prestamo,
+                'funcionario' => $prestamo->funcionario,
+                'fecha_devolucion' => $prestamo->fecha_devolucion,
+                'descripcion' => $prestamo->descripcion,
+                'estado' => $prestamo->estado,
+                'devolucion' => $prestamo->devolucion,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'No se pudo obtener el préstamo.'], 500);
+        }
+    }
+    public function cambioEstado($id)
+    {
+        try {
+            $prestamo = PrestamoDocumento::FindOrFail($id);
+            $prestamo->estado = ($prestamo->estado == 1) ? 0 : 1;
+            $prestamo->save();
+            return redirect()->route('prestamos.index')->with('success', 'eliminacion exitosa');
+        } catch (\Throwable $th) {
+            return redirect()->route('prestamos.index')->with('error', 'algo salio mal');
+        }
     }
 }
