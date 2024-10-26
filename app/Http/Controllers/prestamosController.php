@@ -6,6 +6,8 @@ use App\Models\Documento;
 use App\Models\Funcionario;
 use App\Models\PrestamoDocumento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class prestamosController extends Controller
 {
@@ -30,34 +32,55 @@ class prestamosController extends Controller
             ->get();
         return response()->json($funcionario);
     }
-
     public function store(Request $request)
-    {
-        // Obtener todos los datos del formulario
-        $data = $request->all();
+{
+     // Definir reglas de validación
+    $rules = [
+        'hojaRuta' => 'required',
+        'documento' => 'required',
+        'fechaPrestamoHidden' => 'required|date',
+        'funcionario_id' => 'required',
+        'fechaDevolucion' => 'required|date|after_or_equal:' . Carbon::today()->toDateString(),
+        'descripcion' => 'required',
+    ];
 
-        // Buscar el documento por su título
-        $documento = Documento::where('titulo', $data['documento'])->first();
+    // Mensajes de error personalizados
+    $messages = [
+        'hojaRuta.required' => 'El campo Hoja de Ruta es obligatorio.',
+        'documento.required' => 'El campo Documento es obligatorio.',
+        'fechaPrestamoHidden.required' => 'La fecha de préstamo es obligatoria.',
+        'funcionario_id.required' => 'Debe seleccionar un Funcionario.',
+        'fechaDevolucion.required' => 'La fecha de devolución es obligatoria.',
+        'fechaDevolucion.after_or_equal' => 'La fecha de devolución debe ser hoy o una fecha futura.',
+        'descripcion.required' => 'El campo Descripción es obligatorio.',
+    ];
 
-        // Verificar si se encontró el documento
-        if (!$documento) {
-            return redirect()->back()->withErrors(['documento' => 'Documento no encontrado.'])->withInput();
-        }
+    $validator = Validator::make($request->all(), $rules, $messages);
 
-        // Obtener el ID del funcionario
-        $funcionarioId = $request->input('funcionario_id');
-
-        // Buscar el funcionario por ID
-        $funcionario = Funcionario::find($funcionarioId);
-
-        // Verificar si se encontró el funcionario
-        if (!$funcionario) {
-            return redirect()->back()->withErrors(['funcionario' => 'Funcionario no encontrado.'])->withInput();
-        }
-
-        // Verificación completa, continuar con el almacenamiento
-        dd($funcionario);
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+try{
+    $documento = Documento::where('titulo', $request->input('documento'))->first();
+    if (!$documento) {
+        return redirect()->back()->withErrors(['documento' => 'El documento especificado no existe.']);
+    }
+
+    PrestamoDocumento::create([
+        'hoja_ruta' => $request->input('hojaRuta'),
+        'documento_id' => $documento->id,
+        'fecha_prestamo' => $request->input('fechaPrestamoHidden'),
+        'funcionario_id' => $request->input('funcionario_id'),
+        'fecha_devolucion' => $request->input('fechaDevolucion'),
+        'descripcion' => $request->input('descripcion'),
+        'usuario_id' => auth()->id(),
+    ]);
+
+    return redirect()->route('prestamos.index')->with('success', 'Préstamo registrado exitosamente.');
+} catch(\Exception $e){
+    return redirect()->back()->with('error', 'Hubo un error al registrar el préstamo: ' . $e->getMessage());
+}
+}
 
     public function update(Request $request, $id)
     {
@@ -76,4 +99,28 @@ class prestamosController extends Controller
 
         return redirect()->route('prestamos.index')->with('success', 'Estado actualizado correctamente.');
     }
+    public function actualizar(Request $request, $id)
+{
+    // Validar la fecha de devolución
+    $request->validate([
+        'fechaDevolucion' => 'required|date'
+    ]);
+
+    try {
+        // Buscar el préstamo por ID
+        $prestamo = PrestamoDocumento::findOrFail($id);
+
+        // Actualizar la fecha de devolución
+        $prestamo->fecha_devolucion = $request->input('fechaDevolucion');
+        $prestamo->save();
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('prestamos.index')->with('success', 'Fecha de devolución actualizada correctamente.');
+
+    } catch (\Exception $e) {
+        // Redirigir con mensaje de error si ocurre una excepción
+        return redirect()->route('prestamos.index')->with('error', 'Hubo un error al actualizar la fecha de devolución.');
+    }
+}
+
 }

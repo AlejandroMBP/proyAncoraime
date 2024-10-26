@@ -13,6 +13,29 @@
                 <li class="active">Prestamos</li>
             </ol>
         </section>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <!-- Mensaje de error general -->
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Errores de validación específicos -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="documentos" role="tabpanel" aria-labelledby="documentos-tab">
                 <div class="card panel panel-default">
@@ -49,7 +72,7 @@
                                             <td>{{ $documento->hoja_ruta }}</td>
                                             <td>{{ $documento->documento->titulo }}</td> <!-- Título del documento -->
                                             <td>{{ $documento->fecha_prestamo }}</td> <!-- Fecha de préstamo -->
-                                            <td>{{ $documento->fecha_devolucion }}</td> <!-- Fecha de devolución -->
+                                            <td>{{ $documento->fecha_devolucion }}</td>
                                             <td>{{ $documento->funcionario->nombre }} {{ $documento->funcionario->paterno }}
                                                 {{ $documento->funcionario->materno }}</td>
                                             <!-- Nombre completo del funcionario -->
@@ -79,13 +102,17 @@
                                                     </form>
 
                                                     <button type="button" class="rounded-flexible-btn editbutton"
-                                                        data-id="{{ $documento->id }}">
+                                                        data-id="{{ $documento->id }}"
+                                                        data-fecha="{{ $documento->fecha_devolucion }}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <button type="button" class="rounded-flexible-btn preview-button"
+
+                                                    <button id="editbutton" type="button"
+                                                        class="rounded-flexible-btn preview-button"
                                                         data-id="{{ $documento->id }}">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -109,6 +136,7 @@
         </div>
     </div>
     @include('Administrador.prestamos.create')
+    @include('Administrador.prestamos.edit')
 @endsection
 @push('links')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -181,6 +209,35 @@
                     console.error('Error:', error);
                 });
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modaleditar = new bootstrap.Modal(document.getElementById('modaleditar'), {
+                keyboard: false
+            });
+
+            // Selecciona todos los botones de editar
+            var editButtons = document.querySelectorAll('.editbutton');
+            editButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var documentoId = this.getAttribute('data-id');
+                    var fechaDevolucion = this.getAttribute(
+                    'data-fecha'); // Asegúrate de que el formato sea YYYY-MM-DD
+                    console.log("Fecha recuperada:",
+                    fechaDevolucion); // Debugging: Verificar valor de fecha
+
+                    // Configura la acción del formulario para la ID del documento
+                    var form = document.getElementById('editarFechaDevolucionForm');
+                    form.action = '/prestamos/edit/' + documentoId;
+
+                    // Asignar el valor al campo de fecha y asegurar formato correcto
+                    document.getElementById('fechaDevolucion').value = fechaDevolucion || '';
+
+                    // Muestra el modal
+                    modaleditar.show();
+                });
+            });
+        });
     </script>
 @endpush
 <style>

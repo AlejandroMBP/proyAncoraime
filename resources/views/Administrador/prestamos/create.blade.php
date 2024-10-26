@@ -298,7 +298,7 @@
                                 <!-- Opciones de funcionarios se mostrarán aquí -->
                                 @foreach ($funcionario as $funcionarios)
                                     <a href="javascript:void(0);" class="list-group-item list-group-item-action"
-                                        onclick="seleccionarFuncionario('{{ $funcionarios->nombre }} {{ $funcionarios->paterno }} {{ $funcionarios->materno }}')">
+                                        onclick="seleccionarFuncionario('{{ $funcionarios->nombre }} {{ $funcionarios->paterno }} {{ $funcionarios->materno }}', '{{ $funcionarios->id }}')">
                                         {{ $funcionarios->nombre }} {{ $funcionarios->paterno }}
                                         {{ $funcionarios->materno }}
                                     </a>
@@ -306,9 +306,6 @@
                             </div>
                             <div class="invalid-feedback">Este campo es obligatorio.</div>
                         </div>
-
-
-
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
@@ -378,6 +375,7 @@
         });
     });
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const input = document.getElementById('Funcionario');
@@ -420,11 +418,15 @@
         list.style.display = hasMatch ? 'block' : 'none';
     }
 
-    function seleccionarFuncionario(nombreCompleto) {
-        // Asigna el nombre seleccionado al input y oculta la lista
+    function seleccionarFuncionario(nombreCompleto, id) {
+        // Asigna el nombre seleccionado al input de búsqueda
         document.getElementById('FuncionarioInput').value = nombreCompleto;
+        // Asigna el id del funcionario al campo oculto para enviarlo con el formulario
+        document.getElementById('FuncionarioId').value = id;
+        // Oculta la lista de sugerencias
         document.getElementById('funcionario-list').style.display = 'none';
     }
+
 
     // Ocultar el desplegable si se hace clic fuera del área de búsqueda
     document.addEventListener('click', function(event) {
@@ -434,19 +436,24 @@
             list.style.display = 'none';
         }
     });
-
-    function seleccionarFuncionario(nombreCompleto, id) {
-        // Asigna el nombre seleccionado al input y el id al campo oculto
-        document.getElementById('FuncionarioInput').value = nombreCompleto;
-        document.getElementById('FuncionarioId').value = id;
-        document.getElementById('funcionario-list').style.display = 'none';
-    }
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputFuncionario = document.getElementById('FuncionarioInput');
+        const submitButton = document.querySelector('.custom-save-btn');
 
+        function toggleSubmitButton() {
+            // Habilita el botón solo si hay un ID de funcionario
+            const funcionarioId = document.getElementById('FuncionarioId').value;
+            submitButton.disabled = !funcionarioId;
+        }
 
-
-
+        // Verifica el campo al cargar y al escribir
+        inputFuncionario.addEventListener('input', toggleSubmitButton);
+        toggleSubmitButton(); // Verifica el estado al cargar la página
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -474,5 +481,27 @@
             const allValid = [...prestamoForm.elements].every(input => input.checkValidity());
             submitButton.disabled = !allValid;
         }
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Evento para limpiar el formulario al cerrar el modal
+        $('#modalPrestamo').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset(); // Resetea el formulario
+            $('#documento-list').empty(); // Limpia la lista de documentos
+            $('#funcionario-list').hide(); // Oculta la lista de funcionarios
+        });
+
+        $('#documento').on('input', function() {
+            var query = $(this).val();
+            if (query.length > 0) {
+                // Aquí va tu lógica para filtrar los documentos
+            } else {
+                $('#documento-list').empty(); // Limpia la lista si no hay entrada
+            }
+        });
+
+        // Tu lógica existente para filtrar funcionarios
     });
 </script>

@@ -64,6 +64,7 @@ Route::prefix('/prestamos')->group(function () {
     Route::get('/buscar-documento', [PrestamosController::class, 'buscar'])->name('prestamos.buscar');
     Route::get('/buscar-funcionario', [PrestamosController::class, 'buscarfuncionario'])->name('prestamos.buscarFuncionario');
     Route::post('/create', [prestamosController::class, 'store'])->name('prestamos.store');
+    ROute::put('/edit/{id}',[prestamosController::class,'actualizar'])->name('prestamos.actualizar');
     Route::put('/{id}', [prestamosController::class, 'update'])->name('prestamos.update');
 });
 //rutas impresiones
