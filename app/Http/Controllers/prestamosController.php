@@ -33,54 +33,54 @@ class prestamosController extends Controller
         return response()->json($funcionario);
     }
     public function store(Request $request)
-{
-     // Definir reglas de validación
-    $rules = [
-        'hojaRuta' => 'required',
-        'documento' => 'required',
-        'fechaPrestamoHidden' => 'required|date',
-        'funcionario_id' => 'required',
-        'fechaDevolucion' => 'required|date|after_or_equal:' . Carbon::today()->toDateString(),
-        'descripcion' => 'required',
-    ];
+    {
+        // Definir reglas de validación
+        $rules = [
+            'hojaRuta' => 'required',
+            'documento' => 'required',
+            'fechaPrestamoHidden' => 'required|date',
+            'funcionario_id' => 'required',
+            'fechaDevolucion' => 'required|date|after_or_equal:' . Carbon::today()->toDateString(),
+            'descripcion' => 'required',
+        ];
 
-    // Mensajes de error personalizados
-    $messages = [
-        'hojaRuta.required' => 'El campo Hoja de Ruta es obligatorio.',
-        'documento.required' => 'El campo Documento es obligatorio.',
-        'fechaPrestamoHidden.required' => 'La fecha de préstamo es obligatoria.',
-        'funcionario_id.required' => 'Debe seleccionar un Funcionario.',
-        'fechaDevolucion.required' => 'La fecha de devolución es obligatoria.',
-        'fechaDevolucion.after_or_equal' => 'La fecha de devolución debe ser hoy o una fecha futura.',
-        'descripcion.required' => 'El campo Descripción es obligatorio.',
-    ];
+        // Mensajes de error personalizados
+        $messages = [
+            'hojaRuta.required' => 'El campo Hoja de Ruta es obligatorio.',
+            'documento.required' => 'El campo Documento es obligatorio.',
+            'fechaPrestamoHidden.required' => 'La fecha de préstamo es obligatoria.',
+            'funcionario_id.required' => 'Debe seleccionar un Funcionario.',
+            'fechaDevolucion.required' => 'La fecha de devolución es obligatoria.',
+            'fechaDevolucion.after_or_equal' => 'La fecha de devolución debe ser hoy o una fecha futura.',
+            'descripcion.required' => 'El campo Descripción es obligatorio.',
+        ];
 
-    $validator = Validator::make($request->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-    if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        try {
+            $documento = Documento::where('titulo', $request->input('documento'))->first();
+            if (!$documento) {
+                return redirect()->back()->withErrors(['documento' => 'El documento especificado no existe.']);
+            }
+
+            PrestamoDocumento::create([
+                'hoja_ruta' => $request->input('hojaRuta'),
+                'documento_id' => $documento->id,
+                'fecha_prestamo' => $request->input('fechaPrestamoHidden'),
+                'funcionario_id' => $request->input('funcionario_id'),
+                'fecha_devolucion' => $request->input('fechaDevolucion'),
+                'descripcion' => $request->input('descripcion'),
+                'usuario_id' => auth()->id(),
+            ]);
+
+            return redirect()->route('prestamos.index')->with('success', 'Préstamo registrado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Hubo un error al registrar el préstamo: ' . $e->getMessage());
+        }
     }
-try{
-    $documento = Documento::where('titulo', $request->input('documento'))->first();
-    if (!$documento) {
-        return redirect()->back()->withErrors(['documento' => 'El documento especificado no existe.']);
-    }
-
-    PrestamoDocumento::create([
-        'hoja_ruta' => $request->input('hojaRuta'),
-        'documento_id' => $documento->id,
-        'fecha_prestamo' => $request->input('fechaPrestamoHidden'),
-        'funcionario_id' => $request->input('funcionario_id'),
-        'fecha_devolucion' => $request->input('fechaDevolucion'),
-        'descripcion' => $request->input('descripcion'),
-        'usuario_id' => auth()->id(),
-    ]);
-
-    return redirect()->route('prestamos.index')->with('success', 'Préstamo registrado exitosamente.');
-} catch(\Exception $e){
-    return redirect()->back()->with('error', 'Hubo un error al registrar el préstamo: ' . $e->getMessage());
-}
-}
 
     public function update(Request $request, $id)
     {
@@ -99,28 +99,21 @@ try{
 
         return redirect()->route('prestamos.index')->with('success', 'Estado actualizado correctamente.');
     }
+
     public function actualizar(Request $request, $id)
-{
-    // Validar la fecha de devolución
-    $request->validate([
-        'fechaDevolucion' => 'required|date'
-    ]);
+    {
+        $request->validate([
+            'fecha_devolucion' => 'required|date',
+            // otras validaciones si es necesario
+        ]);
 
-    try {
-        // Buscar el préstamo por ID
+        // Encontrar el préstamo por ID y actualizarlo
         $prestamo = PrestamoDocumento::findOrFail($id);
-
-        // Actualizar la fecha de devolución
-        $prestamo->fecha_devolucion = $request->input('fechaDevolucion');
+        $prestamo->fecha_devolucion = $request->fecha_devolucion;
+        // Actualiza otros campos según sea necesario
         $prestamo->save();
-
-        // Redirigir con mensaje de éxito
-        return redirect()->route('prestamos.index')->with('success', 'Fecha de devolución actualizada correctamente.');
-
-    } catch (\Exception $e) {
-        // Redirigir con mensaje de error si ocurre una excepción
-        return redirect()->route('prestamos.index')->with('error', 'Hubo un error al actualizar la fecha de devolución.');
+        //return redirect()->route('prestamos.index')->with('success', 'fecha cambiada exitosamente');
+        //return response()->json(['success' => true, 'message' => 'Fecha de devolución actualizada con éxito.']);
+        return response()->json(['success' => true, 'message' => 'Fecha de devolución actualizada con éxito.']);
     }
-}
-
 }

@@ -72,8 +72,12 @@
                                             <td>{{ $documento->hoja_ruta }}</td>
                                             <td>{{ $documento->documento->titulo }}</td> <!-- Título del documento -->
                                             <td>{{ $documento->fecha_prestamo }}</td> <!-- Fecha de préstamo -->
-                                            <td>{{ $documento->fecha_devolucion }}</td>
-                                            <td>{{ $documento->funcionario->nombre }} {{ $documento->funcionario->paterno }}
+                                            <td id="fecha-devolucion-{{ $documento->id }}">
+                                                {{ $documento->fecha_devolucion }}</td>
+
+
+                                            <td>{{ $documento->funcionario->nombre }}
+                                                {{ $documento->funcionario->paterno }}
                                                 {{ $documento->funcionario->materno }}</td>
                                             <!-- Nombre completo del funcionario -->
                                             <td>
@@ -103,11 +107,12 @@
 
                                                     <button type="button" class="rounded-flexible-btn editbutton"
                                                         data-id="{{ $documento->id }}"
-                                                        data-fecha="{{ $documento->fecha_devolucion }}">
+                                                        data-fecha = "{{ $documento->fecha_devolucion }}">
+
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <button id="editbutton" type="button"
+                                                    <button id="ver" type="button"
                                                         class="rounded-flexible-btn preview-button"
                                                         data-id="{{ $documento->id }}">
                                                         <i class="fas fa-eye"></i>
@@ -135,8 +140,34 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para editar devolución -->
+    <div class="modal fade" id="editDevolucionModal" tabindex="-1" aria-labelledby="editDevolucionLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editDevolucionForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editDevolucionLabel">Editar Fecha de Devolución</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="documento_id" name="documento_id">
+                        <div class="mb-3">
+                            <label for="fecha_devolucion" class="form-label">Fecha de Devolución</label>
+                            <input type="date" class="form-control" id="fecha_devolucion" name="fecha_devolucion">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @include('Administrador.prestamos.create')
-    @include('Administrador.prestamos.edit')
 @endsection
 @push('links')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -154,17 +185,20 @@
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
     <script>
-        //script del datatables
-        new DataTable('#prestamo-table', {
-            language: {
-                info: 'Paginas _PAGE_ of _PAGES_',
-                infoEmpty: 'No hay registros',
-                infoFiltered: '()',
-                lengthMenu: 'Paginas  _MENU_',
-                zeroRecords: 'No hay registros',
-                search: 'Buscar',
-            }
+        $(document).ready(function() {
+            // Inicializar DataTable solo una vez
+            var table = new DataTable('#prestamo-table', {
+                language: {
+                    info: 'Páginas _PAGE_ de _PAGES_',
+                    infoEmpty: 'No hay registros',
+                    infoFiltered: '()',
+                    lengthMenu: 'Páginas _MENU_',
+                    zeroRecords: 'No hay registros',
+                    search: 'Buscar',
+                }
+            });
         });
+
         //script de apertura de modal de creacion
         document.addEventListener('DOMContentLoaded', function() {
             // Obtén el elemento del modal
@@ -211,31 +245,92 @@
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var modaleditar = new bootstrap.Modal(document.getElementById('modaleditar'), {
-                keyboard: false
+        document.addEventListener("DOMContentLoaded", function() {
+            // Captura de todos los botones de edición
+            const editButtons = document.querySelectorAll(".editButton");
+
+            editButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    // Obtener el ID y fecha de devolución desde el botón
+                    const documentoId = button.getAttribute("data-id");
+                    const fechaDevolucion = button.getAttribute("data-fecha");
+
+
+                    // Asignar los valores al formulario en el modal
+                    document.getElementById("documento_id").value = documentoId;
+                    document.getElementById("fecha_devolucion").value = fechaDevolucion;
+                    console.log("Fecha de devolución:", fechaDevolucion);
+
+                    // Abrir el modal
+                    const modal = new bootstrap.Modal(document.getElementById(
+                        'editDevolucionModal'));
+                    modal.show();
+
+
+                });
             });
 
-            // Selecciona todos los botones de editar
-            var editButtons = document.querySelectorAll('.editbutton');
-            editButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var documentoId = this.getAttribute('data-id');
-                    var fechaDevolucion = this.getAttribute(
-                    'data-fecha'); // Asegúrate de que el formato sea YYYY-MM-DD
-                    console.log("Fecha recuperada:",
-                    fechaDevolucion); // Debugging: Verificar valor de fecha
+            // Manejo del envío del formulario
+            document.getElementById("editDevolucionForm").addEventListener("submit", function(e) {
+                e.preventDefault(); // Prevenir el envío por defecto del formulario
 
-                    // Configura la acción del formulario para la ID del documento
-                    var form = document.getElementById('editarFechaDevolucionForm');
-                    form.action = '/prestamos/edit/' + documentoId;
+                const documentoId = document.getElementById("documento_id").value;
+                const url = `/prestamos/edit/${documentoId}`; // URL específica para la actualización
+                const formData = new FormData(this);
 
-                    // Asignar el valor al campo de fecha y asegurar formato correcto
-                    document.getElementById('fechaDevolucion').value = fechaDevolucion || '';
+                fetch(url, {
+                        method: 'POST', // Enviar como POST para que Laravel lo interprete correctamente
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Protege la solicitud con CSRF
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Mensaje de éxito utilizando SweetAlert2
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Guardado exitoso!',
+                                text: 'La fecha de devolución ha sido actualizada.',
+                                confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Recargar la página después de cerrar el diálogo
+                                    location.reload();
+                                }
+                            });
 
-                    // Muestra el modal
-                    modaleditar.show();
-                });
+                            // Actualizar el contenido de la tabla sin recargar
+                            const fechaDevolucionCell = document.querySelector(
+                                `#fecha-devolucion-${documentoId}`);
+                            if (fechaDevolucionCell) {
+                                fechaDevolucionCell.textContent = document.getElementById(
+                                    "fecha_devolucion").value; // Actualiza la celda con la nueva fecha
+                            }
+
+                            // Cierra el modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById(
+                                'editDevolucionModal'));
+                            modal.hide();
+                        } else {
+                            // Mensaje de error utilizando SweetAlert2
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error al actualizar la fecha",
+                                text: data.message || "Ocurrió un error inesperado.",
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Mensaje de error genérico utilizando SweetAlert2
+                        Swal.fire({
+                            icon: "error",
+                            title: "Ocurrió un error",
+                            text: "No se pudo actualizar la fecha de devolución. Por favor, inténtalo de nuevo.",
+                        });
+                    });
             });
         });
     </script>
