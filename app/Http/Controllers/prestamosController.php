@@ -8,6 +8,7 @@ use App\Models\PrestamoDocumento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class prestamosController extends Controller
 {
@@ -37,6 +38,7 @@ class prestamosController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all());
         $rules = [
             'hojaRuta' => 'required',
             'documento' => 'required',

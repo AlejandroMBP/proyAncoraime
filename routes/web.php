@@ -73,5 +73,10 @@ Route::post('/prestamos/reportes/', [ReporteController::class, 'generarReporte']
 //rutas impresiones
 Route::prefix('/impresiones')->group(function () {
     Route::get('/', [impresionesController::class, 'index'])->name('impresiones.index');
+    Route::post('/create', [impresionesController::class, 'store'])->name('impresiones.store');
+    Route::get('/buscar-documento', [impresionesController::class, 'buscarDocumento'])->name('impresiones.bDoc');
+    Route::get('/buscar-funcionario', [impresionesController::class, 'buscarFuncionario'])->name('impresiones.bFun');
+    Route::post('/cambioEstado/{id}', [impresionesController::class, 'cambioEstado'])->name('impresiones.cambioEstado');
+    Route::get('/documentos/{id}', [impresionesController::class, 'imprimir'])->name('documentos.imprimir');
 });
 require __DIR__ . '/auth.php';
