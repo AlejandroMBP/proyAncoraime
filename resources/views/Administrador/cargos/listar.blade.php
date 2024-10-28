@@ -19,62 +19,37 @@
                 <div class="cardbg">
                     <h6 class="title-inner text-uppercase">Striped Rows</h6>
                     <p>The .table-striped class adds zebra-stripes to a table:</p>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAgregar">
-                        Nuevo Cargo
-                    </button><br><br>
-                    @if ($message = Session::get('listo'))
-                        <div class="col-12 alert alert-success alert-dismissable fade show" role="alert">
-                            <span>{{ $message }}</span>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <form method="GET" action="{{ url('/cargos') }}" class="form-inline">
+                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#modalAgregar"><i class="fa fa-plus"></i>
+                                    Nuevo Cargo
+                                </button>
                         </div>
+                        <div class="col-md-4">
+                            <input type="text" id="search" class="form-control" placeholder="Buscar cargo..."
+                                value="{{ request('search') }}">
+                        </div>
+                    </div><br>
+                    @if ($message = Session::get('listo'))
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Éxito!',
+                                    text: '{{ $message }}',
+                                    timer: 2000, // Se cerrará después de 3000 ms (3 segundos)
+                                    timerProgressBar: false, // Muestra una barra de progreso mientras se cuenta el tiempo
+                                    showConfirmButton: false // Oculta el botón de confirmación
+                                });
+                            });
+                        </script>
                     @endif
-                    <div class="table-responsive">
-                        <table class="table m-0 table-striped">
-                            <thead>
-                                <tr>
-                                    <th>NR</th>
-                                    <th>CARGO</th>
-                                    <th>DESCRIPCIÓN</th>
-                                    <th>ESTADO</th>
-                                    <th>ACCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($cargos as $cargo)
-                                    <tr>
-                                        <td>{{ $cargo->id }}</td>
-                                        <td>{{ $cargo->nombre }}</td>
-                                        <td>{{ $cargo->descripcion }}</td>
-                                        <td>
-                                            @if ($cargo->estado == 'activo')
-                                                <span class="badge badge-success shadow-success m-1">habilitado</span>
-                                            @else
-                                                <span class="badge badge-danger shadow-success m-1">inhabilitado</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary btn-sm"><i
-                                                    class="fa fa-pencil-square-o"></i></button>
-
-
-                                            <button type="button" action class="btn btn-danger btn-sm btnEliminar"
-                                                data-id="{{ $cargo->id }}" data-toggle="modal"
-                                                data-target="#modalEliminar"><i class="fa fa-trash-o"></i></button>
-                                            <form action="{{ url('/cargos', ['id' => $cargo->id]) }}" method="POST"
-                                                id="formEli_{{ $cargo->id }}">
-                                                @csrf
-                                                <input type="text" name="id" value="{{ $cargo->id }}">
-                                                <input type="hidden" name="_method" value="delete">
-                                            </form>
-                                            <button type="button" class="btn btn-secondary btn-sm"><i
-                                                    class="fa fa-power-off"></i></button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div id="cargos-table">
+                        @include('Administrador.cargos.tablacargos')
                     </div>
                 </div>
-
                 <!-- Modal para agregar cargo-->
                 <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
@@ -86,7 +61,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form action="{{ url('/cargos') }}" method="POST" class="needs-validation" novalidate>
+                            <form action="{{ url('/cargos/agregar') }}" method="POST" class="needs-validation" novalidate>
                                 @csrf
                                 <div class="modal-body">
                                     <div class="form-group">
@@ -134,6 +109,46 @@
                     </div>
                 </div>
                 <!-- Fin modal para eliminar cargo -->
+                <!-- Modal para editar cargo-->
+                <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">EDITAR CARGO</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form action="{{ url('/cargos/editar') }}" method="POST" class="needs-validation"
+                                novalidate>
+                                @csrf
+                                <div class="modal-body">
+                                    <input type="hidden" name="id" id="idEdit">
+                                    <div class="form-group">
+                                        <label for="nombre">Cargo</label>
+                                        <input type="text" class="form-control" name="nombre" id="nombreEdit"
+                                            placeholder="nombre" required>
+                                        <div class="invalid-feedback">
+                                            ingresar nombre del cargo
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="descripcion">Descripción</label>
+                                        <input type="text" class="form-control" name="descripcion"
+                                            id="descripcionEdit" placeholder=" descripcion">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin modal para editar cargo -->
             </div>
         </div>
     </div>
@@ -145,9 +160,7 @@
         (function() {
             'use strict';
             window.addEventListener('load', function() {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
                 var forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
                 var validation = Array.prototype.filter.call(forms, function(form) {
                     form.addEventListener('submit', function(event) {
                         if (form.checkValidity() === false) {
@@ -162,10 +175,40 @@
             $(".btnEliminar").click(function() {
                 idEliminar = $(this).data('id');
                 alert(id);
-            })
+            });
             $(".btnModalEliminar").click(function() {
                 $("#formEli_" + idEliminar).submit();
-            })
+            });
+            //codigo para editar
+            $(".btnEditar").click(function() {
+                $("#idEdit").val($(this).data('id'));
+                $("#nombreEdit").val($(this).data('nombre'));
+                $("#descripcionEdit").val($(this).data('descripcion'));
+            });
+
         })();
+
+        function enviarFormulario(cargoId) {
+            document.getElementById('form-editar-estado-' + cargoId).submit();
+        }
+        $(document).ready(function() {
+            $('#search').on('keyup', function() {
+                var query = $(this).val();
+                fetchCargos(query);
+            });
+
+            function fetchCargos(query = '') {
+                $.ajax({
+                    url: "{{ url('/cargos') }}",
+                    method: 'GET',
+                    data: {
+                        search: query
+                    },
+                    success: function(data) {
+                        $('#cargos-table').html(data);
+                    }
+                });
+            }
+        });
     </script>
 @endpush

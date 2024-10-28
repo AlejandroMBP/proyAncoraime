@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cargo;
+
 use Illuminate\Support\Facades\Validator;
 
 class CargoController extends Controller
@@ -11,40 +12,48 @@ class CargoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cargos = Cargo::where('estado','!=','eliminado')
-        ->orderBy('id', 'DESC')
-        ->get();
-        return view('Administrador.cargos.listar', ['cargos'=>$cargos]);
+        $search = $request->input('search');
+    
+        // Consultar los cargos, filtrando si se proporciona un término de búsqueda
+        $cargos = Cargo::when($search, function ($query) use ($search) {
+            return $query->where('nombre', 'like', '%' . $search . '%');
+        })->paginate(10);
+    
+        // Verificar si la solicitud es AJAX
+        if ($request->ajax()) {
+            return view('Administrador.cargos.tablaCargos', compact('cargos'));
+        }
+        return view('Administrador.cargos.listar', ['cargos' => $cargos],['search' => $search]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function agregarCargo(Request $request)
     {
         //
         $cargo = Cargo::create([
-            'nombre'=>$request->nombre,
-            'descripcion'=>$request->descripcion ?? ' ',
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion ?? ' ',
             'estado' => 'activo',
             'usuario_id' => 1,
         ]);
-        return back()->with('listo','se ha insertado correctamente');
+        return back()->with('listo', 'se ha insertado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function editarEstadoCargo(Request $request, $id)
+    {
+        $cargo = Cargo::findOrFail($id);
+        // Cambia el estado del cargo
+        $cargo->estado = $cargo->estado == 'activo' ? 'inactivo' : 'activo';
+
+        $cargo->save();
+        return back()->with('listo', 'se cambio el estado correctamente');
+    }
     public function show(string $id)
     {
         //
@@ -61,9 +70,23 @@ class CargoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function editarCargo(Request $request)
     {
-        //
+        $cargo = Cargo::findOrFail($request->id);
+        $validator = validator::make($request->all(), [
+            'nombre' => 'required|min:3|max:50',
+        ]);
+        if ($validator->fails()) {
+            return back()
+                ->withInput()
+                ->with('listo', 'Favor de llenar todos los campos')
+                ->withErrors($validator);
+        } else {
+            $cargo->nombre = $request->nombre;
+            $cargo->descripcion = $request->descripcion ?? ' ';
+            $cargo->save();
+            return back()->with('listo', 'se ha actualizo correctamente');
+        }
     }
 
     /**
@@ -73,11 +96,8 @@ class CargoController extends Controller
     {
         //
         $cargo = Cargo::findOrFail($id);
-
-        $cargo->estado = 'eliminado'; 
-
+        $cargo->estado = 'eliminado';
         $cargo->save();
-
-        return back()->with('listo','se elimino correctamente');
+        return back()->with('listo', 'se elimino correctamente');
     }
 }
