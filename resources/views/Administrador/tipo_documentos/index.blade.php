@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div class="p-4">
-                        <table id="documentosTable" class="table table-striped table-bordered dt-responsive nowrap"
+                        <table id="tipodocumentosTable" class="table table-striped table-bordered dt-responsive nowrap"
                             style="width:100%">
                             <thead>
                                 <tr>
@@ -71,11 +71,32 @@
 @endsection
 @push('links')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
 @endpush
 @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        new DataTable('#tipodocumentosTable', {
+            responsive: true,
+            language: {
+                info: '',
+                infoEmpty: 'No se encontro registro',
+                infoFiltered: '',
+                lengthMenu: 'Paginas  _MENU_',
+                zeroRecords: 'No se encontro registro',
+                search: 'Buscar',
+            }
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var TipoDocModalCreate = new bootstrap.Modal(document.getElementById('TipoDocModalCreate'), {
@@ -122,7 +143,7 @@
                         success: function(response) {
                             if (response.success) {
                                 Swal.fire({
-                                    position: "top-end",
+                                    position: "center",
                                     icon: "success",
                                     title: response.message,
                                     showConfirmButton: false,
@@ -150,7 +171,7 @@
             });
         }
         $('#createTipoDocForm').submit(function(event) {
-            event.preventDefault(); // Evita el envío normal del formulario
+            event.preventDefault();
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -158,22 +179,33 @@
                 success: function(response) {
                     if (response.success) {
                         Swal.fire({
-                            position: "top-end",
+                            position: "center",
                             icon: "success",
                             title: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            location.reload(); // Recargar la página si es necesario
+                            location.reload();
                         });
                     }
                 },
                 error: function(xhr) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Hubo un error al crear el tipo de documento.",
-                    });
+                    // Manejo de errores
+                    if (xhr.status === 422) {
+                        // Muestra errores de validación
+                        let errors = xhr.responseJSON.errors;
+                        if (errors.descripcion) {
+                            $('#descripcionError').text(errors.descripcion[
+                                0]); // Mostrar error debajo del campo
+                        }
+                    } else {
+
+                        const errorMsg = 'Ocurrió un error, por favor intente nuevamente.';
+                        $('#ajaxError').text(errorMsg).show();
+                        setTimeout(() => {
+                            $('#ajaxError').hide();
+                        }, 5000);
+                    }
                 }
             });
         });
@@ -197,11 +229,22 @@
                     }
                 },
                 error: function(xhr) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Hubo un error al actualizar el tipo de documento.",
-                    });
+                    // Manejo de errores
+                    if (xhr.status === 422) {
+                        // Muestra errores de validación
+                        let errors = xhr.responseJSON.errors;
+                        if (errors.descripcion) {
+                            $('#descripcionError').text(errors.descripcion[
+                                0]); // Mostrar error debajo del campo
+                        }
+                    } else {
+
+                        const errorMsg = 'Ocurrió un error, por favor intente nuevamente.';
+                        $('#ajaxError').text(errorMsg).show();
+                        setTimeout(() => {
+                            $('#ajaxError').hide();
+                        }, 5000);
+                    }
                 }
             });
         });

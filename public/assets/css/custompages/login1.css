@@ -22,7 +22,7 @@ a:hover{text-decoration:none}
 .custom-control-label::before,.custom-control-label::after{right:265px;top:6px;left:auto;}
 }
 .bg-login {
-	background-image: url('../../images/bg-01.jpg'); 
+	background-image: url('../../images/bg-01.jpg');
 }
 .bg-login:before {
 	content: "";
@@ -33,10 +33,10 @@ a:hover{text-decoration:none}
 	height: 100%;
 	top: 0;
 	left: 0;
-	background: 	#4682b4;
-	background: -webkit-linear-gradient(bottom, #4682b4, 	#008080);
-	background: -o-linear-gradient(bottom, 	#4682b4, 	#008080);
-	background: -moz-linear-gradient(bottom, #4682b4, 	#008080);
-	background: linear-gradient(bottom, #4682b4, #008080);
+	background: #005bea;
+	background: -webkit-linear-gradient(bottom, #005bea, #00c6fb);
+	background: -o-linear-gradient(bottom, #005bea, #00c6fb);
+	background: -moz-linear-gradient(bottom, #005bea, #00c6fb);
+	background: linear-gradient(bottom, #005bea, #00c6fb);
 	opacity: 0.9;
 }

@@ -13,6 +13,7 @@
                         <label for="editDescripcion" class="form-label">Descripción</label>
                         <input type="text" id="editDescripcion" name="descripcion" class="form-control"
                             placeholder="Ingrese la descripción" required>
+                        <small id="descripcionError" class="text-danger"></small>
                     </div>
                 </div>
                 <div class="modal-footer custom-modal-footer">

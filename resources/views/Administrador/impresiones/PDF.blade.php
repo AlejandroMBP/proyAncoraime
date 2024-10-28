@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
-    <title>Reporte de Préstamos</title>
+    <meta charset="UTF-8">
+    <title>Reporte de Impresiones</title>
     <style>
         @page {
             size: A4 landscape;
@@ -10,7 +11,6 @@
         }
 
         h1 {
-            font-family: "Updock";
             font-weight: 400;
             text-align: center;
             /* Centrar el título */
@@ -77,33 +77,28 @@
             <h3>DOCUMENTO DE LA DIRECCIÓN ADMINISTRATIVA FINANCIERA</h3>
         </div>
     </div>
-    <p>Desde: {{ $fechaDesde }} | Hasta: {{ $fechaHasta }}</p>
+    <p>Desde: {{ $fechaDesde }} Hasta: {{ $fechaHasta }}</p>
 
-    <table width="100%" border="1" cellspacing="0" cellpadding="5">
+    <table>
         <thead>
             <tr>
-                <th>Hoja de Ruta</th>
-                <th>Fecha de Préstamo</th>
-                <th>Funcionario</th>
-                <th>Cargo</th>
-                <th>Fecha de Devolución</th>
-                <th>Descripción</th>
-                <th>Devolvio ?</th>
-                {{-- <th>estado</th> --}}
+                <th>#</th>
+                <th>Hola de Ruta</th>
+                <th>Documento</th>
+                <th>Autoridad</th>
+                <th>Descripcion</th>
+                <th>Fecha de Impresión</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($prestamos as $prestamo)
+            @foreach ($impresiones as $impresion)
                 <tr>
-                    <td>{{ $prestamo->hoja_ruta }}</td>
-                    <td>{{ $prestamo->fecha_prestamo }}</td>
-                    <td>{{ $prestamo->funcionario->nombre }} {{ $prestamo->funcionario->paterno }}
-                        {{ $prestamo->funcionario->materno }}</td>
-                    <td>{{ $prestamo->funcionario->cargo->nombre }}</td>
-                    <td>{{ $prestamo->fecha_devolucion }}</td>
-                    <td>{{ $prestamo->descripcion }}</td>
-                    <td>{{ $prestamo->devolucion }}</td>
-                    {{-- <td>{{ $prestamo->estado }}</td> --}}
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $impresion->hoja_ruta }}</td>
+                    <td>{{ $impresion->documento->titulo }}</td>
+                    <td>{{ $impresion->nombreCompleto_autoridad }}</td>
+                    <td>{{ $impresion->descripcion }}</td>
+                    <td>{{ \Carbon\Carbon::parse($impresion->fecha_impresion)->format('d/m/Y') }}</td>
                 </tr>
             @endforeach
         </tbody>

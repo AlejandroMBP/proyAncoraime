@@ -355,6 +355,89 @@
                 }
             });
 
+            // Ocultar select cuando se hace clic fuera de él
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#documentoSelect').length &&
+                    !$(event.target).is('#Documento')) {
+                    $('#documentoSelect').hide();
+                }
+
+                if (!$(event.target).closest('#funcionarioSelect').length &&
+                    !$(event.target).is('#funcionario')) {
+                    $('#funcionarioSelect').hide();
+                }
+            });
+
+            // Al seleccionar una opción, actualiza el valor del input y oculta el select
+            $('#documentoSelect').on('change', function() {
+                $('#Documento').val($('#documentoSelect option:selected').text());
+                $('#documentoSelect').hide();
+            });
+
+            $('#funcionarioSelect').on('change', function() {
+                $('#funcionario').val($('#funcionarioSelect option:selected').text());
+                $('#funcionarioSelect').hide();
+            });
+        });
+    </script>
+    {{-- <script>
+        $(document).ready(function() {
+            // Ocultar selects al cargar la página
+            $('#documentoSelect').hide();
+            $('#funcionarioSelect').hide();
+
+            // Búsqueda en tiempo real para el campo Documento
+            $('#Documento').on('input', function() {
+                const query = $(this).val();
+                if (query) {
+                    $('#documentoSelect').show(); // Mostrar el select cuando se escribe
+                    $.ajax({
+                        url: "/impresiones/buscar-documento",
+                        method: 'GET',
+                        data: {
+                            query: query
+                        },
+                        success: function(response) {
+                            $('#documentoSelect').empty();
+                            response.forEach(doc => {
+                                $('#documentoSelect').append(
+                                    `<option value="${doc.id}">${doc.titulo}</option>`
+                                );
+                            });
+                        }
+                    });
+                } else {
+                    $('#documentoSelect').hide(); // Ocultar si el campo está vacío
+                }
+            });
+
+            // Búsqueda en tiempo real para el campo Funcionario
+            $('#funcionario').on('input', function() {
+                const query = $(this).val();
+                if (query) {
+                    $('#funcionarioSelect').show(); // Mostrar el select cuando se escribe
+                    $.ajax({
+                        url: "{{ route('impresiones.bFun') }}",
+                        method: 'GET',
+                        data: {
+                            query: query
+                        },
+                        success: function(response) {
+                            $('#funcionarioSelect').empty();
+                            response.forEach(fun => {
+                                const fullName =
+                                    `${fun.nombre} ${fun.paterno} ${fun.materno}`;
+                                $('#funcionarioSelect').append(
+                                    `<option value="${fun.id}">${fullName}</option>`
+                                );
+                            });
+                        }
+                    });
+                } else {
+                    $('#funcionarioSelect').hide(); // Ocultar si el campo está vacío
+                }
+            });
+
             // Ocultar select cuando el campo Documento pierde el foco
             $('#Documento').on('blur', function() {
                 setTimeout(function() {
@@ -380,7 +463,7 @@
                 $('#funcionarioSelect').hide();
             });
         });
-    </script>
+    </script> --}}
 
     <script>
         $(document).ready(function() {

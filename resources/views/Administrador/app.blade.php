@@ -14,16 +14,19 @@
     <meta name="author" content="perfectusinc.com">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <!-- Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="{{ asset('../../assets/css/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap/bootstrap.min.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Custom CSS Starts -->
-    <link rel="stylesheet" href="{{ asset('../../assets/css/skin/all-skins.css') }}">
-    <link rel="stylesheet" href="{{ asset('../../assets/css/general/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('../../assets/css/sidebar/side-nav.css') }}">
-    <link rel="stylesheet" href="{{ asset('../../assets/css/fonts/fonts-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('../../assets/css/nanoscroller/nanoscroller.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/skin/all-skins.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/general/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/sidebar/side-nav.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fonts/fonts-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/nanoscroller/nanoscroller.css') }}">
+
     <!-- Incluye el CSS de SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -53,16 +56,18 @@
     </div>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="{{ asset('../../assets/js/jquery/slim.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery/slim.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap/bootstrap.min.js') }}"></script>
     <!-- Popper.JS -->
-    <script src="{{ asset('../../assets/js/jquery/popper.min.js') }}"></script>
     <!-- Bootstrap JS -->
-    <script src="{{ asset('../../assets/js/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('../../assets/js/bootstrap/bootstrap.min.js') }}"></script>
     <!-- Theme JS -->
-    <script src="{{ asset('../../assets/js/nanoscroller/nanoscroller.js') }}"></script>
-    <script src="{{ asset('../../assets/js/custom/theme.js') }}"></script>
+    <script src="{{ asset('assets/js/nanoscroller/nanoscroller.js') }}"></script>
+
+    <script src="{{ asset('assets/js/custom/theme.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     @stack('scripts')
 </body>

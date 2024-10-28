@@ -16,7 +16,7 @@ class tipoDocumentoController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'descripcion' => 'required|string|max:255',
+            'descripcion' => 'required|string|min:4|max:150|regex:/^[a-zA-Z0-9\s]+$/',
         ]);
 
         TipoDocumento::create([
@@ -25,13 +25,14 @@ class tipoDocumentoController extends Controller
             'usuario_id' => auth()->id(),
         ]);
 
+        // return response()->json(['success' => true, 'message' => 'Creado exitosamente']);
         return response()->json(['success' => true, 'message' => 'Creado exitosamente']);
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'descripcion' => 'required|string|max:255',
+            'descripcion' => 'required|string|min:4|max:150|regex:/^[a-zA-Z0-9\s]+$/',
         ]);
         $tipoDocumento = TipoDocumento::findOrFail($id);
         $tipoDocumento->update([

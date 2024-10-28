@@ -272,9 +272,11 @@
                             <select id="editCategoria" name="categoria" class="form-select" required>
                                 <option value="" disabled>Seleccione una categoría</option>
                                 @foreach ($tiposDocumentos as $tipoDocumento)
-                                    <option value="{{ $tipoDocumento->id }}">
-                                        {{ $tipoDocumento->descripcion }}
-                                    </option>
+                                    @if ($tipoDocumento->estado == 1)
+                                        <option value="{{ $tipoDocumento->id }}">
+                                            {{ $tipoDocumento->descripcion }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

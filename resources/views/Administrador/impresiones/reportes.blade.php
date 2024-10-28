@@ -1,6 +1,6 @@
-<form id="formReporte" method="POST" action="{{ route('reporte.pdf') }}" target="_blank">
+<form id="formReportereporte" method="POST" action="{{ route('impresiones.reporte') }}" target="_blank">
     @csrf
-    <div class="modal fade" id="reporteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="reporteImpresionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content custom-modal">
                 <div class="modal-header custom-modal-header">
@@ -18,27 +18,25 @@
                             <input type="date" id="fecha-hasta" name="fecha_hasta" class="form-control" required>
                         </div>
                         <div class="col-md-3">
-                            <label for="tipoDocumento" class="form-label">Tipo de documento</label>
-                            <select id="tipoDocumento" name="tipoDocumento" class="form-select" required>
-                                <option value="" disabled selected>Seleccione</option>
-                                @foreach ($tiposDocumentos as $tipoDocumento)
-                                    @if ($tipoDocumento->estado == 1)
-                                        <option value="{{ $tipoDocumento->id }}">
-                                            {{ $tipoDocumento->descripcion }}
-                                        </option>
-                                    @endif
+                            <label for="tituloDocumento" class="form-label">Tipo de documento</label>
+                            <select id="tituloDocumento" name="tituloDocumento" class="form-select">
+                                <option value="" selected>Seleccione</option>
+                                @foreach ($documentos as $doc)
+                                    <option value="{{ $doc->id }}">
+                                        {{ $doc->titulo }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+
                     </div>
                 </div>
                 <div class="modal-footer custom-modal-footer">
                     <button type="button" class="btn btn-secondary custom-close-btn"
                         data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary custom-save-btn"
-                        formaction="{{ route('reporte.pdf') }} ">Generar PDF</button>
-                    <button type="submit" class="btn btn-success custom-save-btn"
-                        formaction="{{ route('reporte.excel') }}">Generar Excel</button>
+                    <button type="submit" class="custom-save-btn"
+                        formaction="{{ route('impresiones.reporte') }} ">Generar
+                        PDF</button>
                 </div>
             </div>
         </div>

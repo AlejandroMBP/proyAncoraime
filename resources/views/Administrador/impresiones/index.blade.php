@@ -44,6 +44,10 @@
                                 @php
                                     $contador = 1;
                                 @endphp
+                                @php
+                                    use Illuminate\Support\Facades\Crypt;
+                                @endphp
+
                                 @foreach ($impresiones as $impresion)
                                     @if ($impresion->estado == 1)
                                         <tr>
@@ -75,9 +79,10 @@
                                                     </form>
                                                     <button type="button" class="rounded-flexible-btn print-btn"
                                                         title="Imprimir"
-                                                        onclick="imprimirPDF('{{ route('documentos.imprimir', ['id' => $impresion->documento]) }}')">
+                                                        onclick="imprimirPDF('{{ route('documentos.imprimir', ['id' => Crypt::encrypt($impresion->documento)]) }}')">
                                                         <i class="fas fa-print"></i>
                                                     </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -94,6 +99,7 @@
         </div>
 
         @include('Administrador.impresiones.create')
+        @include('Administrador.impresiones.reportes')
     </div>
 @endsection
 
@@ -174,6 +180,18 @@
                 win.print();
             };
         }
+    </script>
+    <script>
+        //APERTURA DEL MODAL DE REPORTES
+        document.addEventListener('DOMContentLoaded', function() {
+            var reporteImpresionModal = new bootstrap.Modal(document.getElementById('reporteImpresionModal'), {
+                keyboard: false
+            });
+
+            document.getElementById('openImpresionModalReporte').addEventListener('click', function() {
+                reporteImpresionModal.show();
+            });
+        });
     </script>
 @endpush
 

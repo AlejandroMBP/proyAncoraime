@@ -231,8 +231,9 @@
                 <div class="modal-body custom-modal-body">
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">descripcion</label>
-                        <input type="text" id="descripcion" name="descripcion" class="form-control"
+                        <input type="text" id="descripcion" name="descripcion" class="form-control is-invalid"
                             placeholder="Ingrese descripcion" required>
+                        <small id="descripcionError" class="text-danger"></small>
                     </div>
                 </div>
                 <div class="modal-footer custom-modal-footer">

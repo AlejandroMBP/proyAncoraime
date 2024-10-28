@@ -50,9 +50,20 @@
                                         <tr>
                                             <td>{{ $contador }}</td>
                                             <td>{{ $documento->hoja_ruta }}</td>
-                                            <td>{{ $documento->titulo }}</td>
+                                            <td>
+                                                <span class="texto-abreviado" title="{{ $documento->titulo }}">
+                                                    {{ Str::limit($documento->titulo, 20) }}
+                                                    <!-- Limita el texto a 20 caracteres -->
+                                                </span>
+                                            </td>
                                             <td>{{ $documento->fecha }}</td>
-                                            <td>{{ $documento->ubicacion }}</td>
+                                            <td>
+                                                <span class="texto-abreviado" title="{{ $documento->ubicacion }}">
+                                                    {{ Str::limit($documento->ubicacion, 20) }}
+                                                    <!-- Limita el texto a 20 caracteres -->
+                                                </span>
+                                            </td>
+
                                             <td>{{ $documento->tipoDocumento->descripcion }}</td>
                                             <td>{{ $documento->cantidad_fojas }}</td>
                                             <td>{{ $documento->numero_carpeta }}</td>
@@ -123,7 +134,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 @endpush
 @push('scripts')
-    <!-- Incluir PDF.js desde un CDN -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
@@ -311,6 +321,20 @@
     </script>
 @endpush
 <style>
+    /* estilo de  texto abrebiado */
+    .texto-abreviado {
+        display: inline-block;
+        /* Permite que el elemento se ajuste al contenido */
+        max-width: 150px;
+        /* Ajusta el ancho máximo según sea necesario */
+        overflow: hidden;
+        /* Oculta el texto que desborda */
+        white-space: nowrap;
+        /* Evita que el texto se divida en varias líneas */
+        text-overflow: ellipsis;
+        /* Muestra '...' para indicar que hay más texto */
+    }
+
     .rounded-flexible-btn {
         background: linear-gradient(to right, #007bff, #20c997);
         color: white;
