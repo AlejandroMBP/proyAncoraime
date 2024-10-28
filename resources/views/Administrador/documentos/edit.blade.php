@@ -1,19 +1,14 @@
 <style>
     .modal-lg {
         max-width: 1000px;
-        /* Ajusta este valor según tus necesidades */
     }
 
     .custom-modal {
         background: linear-gradient(135deg, #007bff, #20c997);
         border-radius: 15px;
-        /* Bordes redondeados */
         color: white;
-        /* Texto blanco */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        /* Sombra suave */
         border: none;
-        /* Sin bordes */
     }
 
     .custom-modal-header {
