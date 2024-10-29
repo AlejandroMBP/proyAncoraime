@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap/bootstrap.min.css') }}">
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <!-- Custom CSS Starts -->
+    <link rel="stylesheet" href="{{ asset('misEstilos/estilos.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/skin/all-skins.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/general/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/sidebar/side-nav.css') }}">

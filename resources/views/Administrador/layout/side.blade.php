@@ -10,15 +10,15 @@
                 </li>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-user-o"></i> <span>ADMIN USUARIOS</span>
+                        <i class="fa fa-user"></i> <span>ADMIN USUARIOS</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="{{ route('usuario.index') }}"><i class="fa fa-users"></i> USUARIOS</a></li>
-                        <li><a href="../../index.html"><i class="fa fa-address-book-o"></i>ROLES </a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-address-card-o"></i> PERMISOS</a></li>
+                        <li><a href="../../index.html"><i class="fa fa-address-book"></i>ROLES </a></li>
+                        <li><a href="../../index2.html"><i class="fa fa-address-card"></i> PERMISOS</a></li>
                     </ul>
                 </li>
                 <li class="treeview">
@@ -29,13 +29,13 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ url('/cargos') }}"><i class="fa fa-circle-o"></i> CARGOS </a></li>
+                        <li><a href="{{ url('/cargos') }}"><i class="fa fa-circle"></i> CARGOS </a></li>
                         <li><a href="../../index2.html"><i class="fa fa-users"></i> FUNCIONARIOS </a></li>
                     </ul>
                 </li>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-folder-open-o"></i> <span>GESTION DOCUMENTAL</span>
+                        <i class="fa fa-folder-open"></i> <span>GESTION DOCUMENTAL</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -43,8 +43,8 @@
                     <ul class="treeview-menu">
                         <li><a href="{{ route('tipoDoc.index') }}"><i class="fa fa-book"></i>TIPOS DE DOCUMENTO</a>
                         </li>
-                        <li><a href="{{ route('documentos.index') }}"><i class="fa fa-file-o"></i>DOCUMENTOS</a></li>
-                        <li><a href="{{ route('prestamos.index') }}"><i class="fa fa-address-book-o"></i>PRESTAMOS</a>
+                        <li><a href="{{ route('documentos.index') }}"><i class="fa fa-file"></i>DOCUMENTOS</a></li>
+                        <li><a href="{{ route('prestamos.index') }}"><i class="fa fa-address-book"></i>PRESTAMOS</a>
                         </li>
                         <li><a href="{{ route('impresiones.index') }}"><i class="fa fa-print"></i>IMPRESIONES</a></li>
                     </ul>
