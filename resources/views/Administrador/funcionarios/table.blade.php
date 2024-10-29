@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php $c = 1; ?>
+            <?php $c = $funcionarios->firstItem(); ?>
             @forelse ($funcionarios as $funcionario)
                 <tr>
                     <td>{{ $c++ }}</td>

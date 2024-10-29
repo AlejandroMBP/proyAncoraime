@@ -9,7 +9,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php $c = 1; ?>
+            <?php $c = $cargos->firstItem(); ?>
             @foreach ($cargos as $cargo)
                 <tr>
                     <td>{{ $c++ }}</td>

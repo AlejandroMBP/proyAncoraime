@@ -19,7 +19,9 @@ class CargoController extends Controller
         // Consultar los cargos, filtrando si se proporciona un término de búsqueda
         $cargos = Cargo::when($search, function ($query) use ($search) {
             return $query->where('nombre', 'like', '%' . $search . '%');
-        })->paginate(10);
+        })
+        ->orderBy('id', 'DESC')
+        ->paginate(10);
     
         // Verificar si la solicitud es AJAX
         if ($request->ajax()) {
