@@ -76,7 +76,6 @@
                                                         <button type="submit" class="rounded-flexible-btn delete-btn"><i
                                                                 class="fas fa-trash-alt"></i></button>
                                                     </form>
-
                                                     <button type="button" class="rounded-flexible-btn editbutton"
                                                         data-id="{{ $documento->id }}"
                                                         data-hojaruta="{{ $documento->hoja_ruta }}"
@@ -186,7 +185,7 @@
                     const nroCarpeta = this.getAttribute('data-carpeta');
                     const ubicacion = this.getAttribute('data-ubicacion');
                     const pdfPath = this.getAttribute(
-                        'data-pdf'); // Asegúrate de que este atributo esté definido en tu botón
+                        'data-pdf');
 
                     // Rellenar el formulario con los valores
                     document.getElementById('editHojaDeRuta').value = hojaDeRuta;
@@ -244,13 +243,11 @@
                     const ubicacion = this.getAttribute('data-ubicacion');
                     const pdfPath = this.getAttribute('data-pdf');
 
-                    // Rellenar el modal con los valores
                     document.getElementById('previewHojaRuta').innerText = hojaDeRuta;
                     document.getElementById('previewTitulo').innerText = titulo;
                     document.getElementById('previewFecha').innerText = fecha;
                     document.getElementById('previewUbicacion').innerText = ubicacion;
 
-                    // Renderizar el PDF
                     const canvas = document.getElementById('pdfPreviewCanvas');
                     const ctx = canvas.getContext('2d');
 
@@ -270,7 +267,6 @@
                         });
                     });
 
-                    // Abrir el modal de vista previa
                     previewModal.show();
                 });
             });

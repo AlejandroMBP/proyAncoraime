@@ -58,7 +58,6 @@
                                                         class="formbtn">
                                                         @csrf
                                                         @method('PUT')
-                                                        <!-- Método para indicar que se está haciendo una actualización -->
                                                         <button type="button"
                                                             class="rounded-flexible-btn editUsuariobutton"
                                                             data-id="{{ $users->id }}" data-name="{{ $users->name }}"
@@ -144,16 +143,14 @@
                             location.reload();
                         });
                         // Opcional: recargar la tabla o limpiar el formulario
-                        $('#usuarioForm')[0].reset(); // Reiniciar el formulario
-                        $('.error-message').empty(); // Limpiar los mensajes de error
-                        $('#crearUsuarioModal').modal('hide'); // Cerrar el modal
+                        $('#usuarioForm')[0].reset();
+                        $('.error-message').empty();
+                        $('#crearUsuarioModal').modal('hide');
 
                     },
                     error: function(xhr) {
-                        // Limpiar mensajes de error previos
-                        $('.error-message').empty(); // Limpiar mensajes de error existentes
+                        $('.error-message').empty();
 
-                        // Mostrar errores debajo de los campos
                         if (xhr.responseJSON.errors) {
                             for (const [key, value] of Object.entries(xhr.responseJSON
                                     .errors)) {
@@ -161,9 +158,8 @@
                                     0]; // Tomar el primer mensaje de error
                                 const inputField = $(
                                     `[name="${key}"]`
-                                ); // Seleccionar el campo de entrada correspondiente
+                                );
 
-                                // Agregar el mensaje de error en el contenedor debajo del campo
                                 inputField.siblings('.error-message').text(errorMessage);
                             }
                         }
