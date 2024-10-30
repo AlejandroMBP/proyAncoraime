@@ -22,11 +22,10 @@ return new class extends Migration
             $table->integer('cantidad_fojas');
             $table->string('codigo_qr');
             $table->integer('numero_carpeta');
-            $table->text('descripcion');
-
+            $table->integer('estado')->default(1); //mapo de eliminacion logica
             $table->unsignedBigInteger('usuario_id');
             $table->timestamps();
-            // Convertir a clave foránea  
+            // Convertir a clave foránea
             $table->foreign('tipo_documento_id')->references('id')->on('tipos_documentos')->onDelete('cascade');
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
         });

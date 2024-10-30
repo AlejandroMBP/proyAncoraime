@@ -16,7 +16,7 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="../../index2.html"><i class="fa fa-users"></i> USUARIOS</a></li>
+                        <li><a href="{{ route('usuario.index') }}"><i class="fa fa-users"></i> USUARIOS</a></li>
                         <li><a href="../../index.html"><i class="fa fa-address-book-o"></i>ROLES </a></li>
                         <li><a href="../../index2.html"><i class="fa fa-address-card-o"></i> PERMISOS</a></li>
                     </ul>
@@ -41,10 +41,12 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="../../index.html"><i class="fa fa-book"></i>TIPOS DE DOCUMENTO</a></li>
-                        <li><a href="../../index.html"><i class="fa fa-file-o"></i>DOCUMENTOS</a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-address-book-o"></i>PRESTAMOS</a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-print"></i>IMPRESIONES</a></li>
+                        <li><a href="{{ route('tipoDoc.index') }}"><i class="fa fa-book"></i>TIPOS DE DOCUMENTO</a>
+                        </li>
+                        <li><a href="{{ route('documentos.index') }}"><i class="fa fa-file-o"></i>DOCUMENTOS</a></li>
+                        <li><a href="{{ route('prestamos.index') }}"><i class="fa fa-address-book-o"></i>PRESTAMOS</a>
+                        </li>
+                        <li><a href="{{ route('impresiones.index') }}"><i class="fa fa-print"></i>IMPRESIONES</a></li>
                     </ul>
                 </li>
                 <li>
