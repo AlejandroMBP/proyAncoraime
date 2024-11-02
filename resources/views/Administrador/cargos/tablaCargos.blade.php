@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table id="cargos-table" class="table m-0 table-striped">
+    <table id="cargos-table" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
         <thead>
             <tr>
                 <th>NR</th>
@@ -22,15 +22,14 @@
                         @endif
                     </td>
                     <td>
-                        <button type="button" action class="btn btn-primary btn-sm btnEditar"
+                        <button type="button" action class="rounded-flexible-btn btnEditar"
                             data-id="{{ $cargo->id }}" data-nombre="{{ $cargo->nombre }}"
                             data-descripcion="{{ $cargo->descripcion }}" data-toggle="modal"
-                            data-target="#modalEditar"><i class="fa fa-pencil"></i></button>
-
+                            data-target="#modalEditar"><i class="fa fa-edit"></i></button>
 
                         <!-- Botón que activa el envío del formulario -->
                         <button onclick="enviarFormulario({{ $cargo->id }})" type="button"
-                            class="btn btn-secondary btn-sm">
+                            class="rounded-flexible-btn">
                             <i class="fa fa-power-off"></i>
                         </button>
                         <!-- Formulario oculto que se enviará como POST -->
@@ -40,13 +39,14 @@
                             @csrf
                         </form>
 
-                        <button type="button" action class="btn btn-danger btn-sm btnEliminar"
-                            data-id="{{ $cargo->id }}" data-toggle="modal" data-target="#modalEliminar"><i
-                                class="fa fa-trash-o"></i></button>
-                        <form action="{{ url('/cargos', ['id' => $cargo->id]) }}" method="POST"
+                        <button type="button" class="rounded-flexible-btn btnEliminar" data-id="{{ $cargo->id }}"
+                            data-toggle="modal" data-target="#modalEliminar"><i class="fa fa-trash"></i></button>
+
+                        <!-- Formulario oculto para eliminar el cargo -->
+                        <form action="{{ url('/cargos/eliminar', ['id' => $cargo->id]) }}" method="POST"
                             id="formEli_{{ $cargo->id }}">
                             @csrf
-                            <input type="hidden" name="_method" value="delete">
+                            @method('POST') 
                         </form>
                     </td>
                 </tr>

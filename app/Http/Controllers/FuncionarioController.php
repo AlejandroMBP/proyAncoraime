@@ -14,8 +14,7 @@ class FuncionarioController extends Controller
      */
     public function index(Request $request)
     {
-        $cargos = Cargo::where('estado', '!=', 'eliminado')
-            ->orderBy('nombre', 'ASC')
+        $cargos = Cargo::orderBy('nombre', 'ASC')
             ->get();
         $query = $request->get('search');
 
@@ -109,7 +108,7 @@ class FuncionarioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function eliminarFuncionario($id)
     {
         //
         $funcionario = Funcionario::findOrFail($id);

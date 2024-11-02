@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content custom-modal">
+            <div class="modal-header custom-modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">EDITAR FUNCIONARIO</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -9,7 +9,7 @@
             </div>
             <form action="{{ url('/funcionarios/editar') }}" method="POST" class="needs-validation" novalidate>
                 @csrf
-                <div class="modal-body">
+                <div class="modal-body custom-modal-body">
                     <input type="hidden" name="id" id="idEdit">
                     <div class="form-row">
                         <div class="form-group col-md-4">
@@ -65,9 +65,12 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="cargo_id">Cargo</label>
-                            <select id="cargo_idEdit" name="cargo_id" class="form-control" required>
+                            <select id="cargo_idEdit" name="cargo_id" class="form-control form-select" required>
                                 @foreach ($cargos as $cargo)
-                                        <option value="{{ $cargo->id }}">{{ $cargo->nombre }}</option>
+                                @if ($cargo->estado != 'eliminado' && $cargo->estado =='activo')
+                                        <option value="{{ $cargo->id }}">{{ $cargo->nombre }}</option>                                    
+                                @endif
+
                                 @endforeach
                             </select>
                         </div>
@@ -85,9 +88,9 @@
                         <input type="text" name="descripcion" id="descripcionEdit" class="form-control" >
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                <div class="modal-footer custom-modal-footer">
+                    <button type="button" class="btn btn-secondary custom-close-btn" data-dismiss="modal">cancelar</button>
+                    <button type="submit" class="btn btn-primary custom-save-btn">Guardar</button>
                 </div>
             </form>
         </div>

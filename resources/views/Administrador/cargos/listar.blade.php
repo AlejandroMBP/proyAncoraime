@@ -18,20 +18,22 @@
             <div class="col-lg-12 col-sm-12">
                 <div class="cardbg">
                     <h6 class="title-inner text-uppercase">Striped Rows</h6>
-                    <p>The .table-striped class adds zebra-stripes to a table:</p>
                     <div class="row">
                         <div class="col-md-8">
                             <form method="GET" action="{{ url('/cargos') }}" class="form-inline">
-                                <button type="button" class="btn btn-success" data-toggle="modal"
-                                    data-target="#modalAgregar"><i class="fa fa-plus"></i>
+                                <button type="button" class="rounded-flexible-btn" data-toggle="modal"
+                                    data-target="#modalAgregar">
                                     Nuevo Cargo
                                 </button>
                         </div>
                         <div class="col-md-4">
-                            <input type="text" id="search" class="form-control" placeholder="Buscar cargo..."
-                                value="{{ request('search') }}">
+                            <p class="form-inline">
+                                <button class="btn btn-primary"><i class="fa fa-search"></i></button>
+                                <input type="text" id="search" class="form-control mr-2"
+                                    placeholder="Buscar cargo..." value="{{ request('search') }}">
+                            </p>
                         </div>
-                    </div><br>
+                    </div>
                     @if ($message = Session::get('listo'))
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
@@ -51,103 +53,34 @@
                     </div>
                 </div>
                 <!-- Modal para agregar cargo-->
-                <div class="modal fade" id="modalAgregar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">AGREGAR CARGO</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form action="{{ url('/cargos/agregar') }}" method="POST" class="needs-validation" novalidate>
-                                @csrf
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="nombre">Cargo</label>
-                                        <input type="text" class="form-control" name="nombre" id="cargo"
-                                            placeholder="cargo" required>
-                                        <div class="invalid-feedback">
-                                            ingresar nombre del cargo
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="descripcion">Descripción</label>
-                                        <input type="text" class="form-control" name="descripcion" id="descripcion"
-                                            placeholder=" descripcion">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                @include('Administrador.cargos.agregarCargo')
                 <!-- Fin modal para agregar cargo -->
-                <!-- Modal para eliminar cargo-->
-                <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
+
+                <!-- Modal de confirmación de eliminacion-->
+                <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog"
+                    aria-labelledby="modalEliminarLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ELIMINAR CARGO</h5>
+                                <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <h5>¿ Desea eliminar el cargo ?</h5>
+                                ¿Estás seguro de que deseas eliminar este cargo?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">cancelar</button>
-                                <button type="button" class="btn btn-danger btnModalEliminar">Eliminar</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" id="confirmarEliminar">Eliminar</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Fin modal para eliminar cargo -->
+                <!-- Fin modal para eliminar cargo  de eliminacion-->
+
                 <!-- Modal para editar cargo-->
-                <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">EDITAR CARGO</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form action="{{ url('/cargos/editar') }}" method="POST" class="needs-validation"
-                                novalidate>
-                                @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="id" id="idEdit">
-                                    <div class="form-group">
-                                        <label for="nombre">Cargo</label>
-                                        <input type="text" class="form-control" name="nombre" id="nombreEdit"
-                                            placeholder="nombre" required>
-                                        <div class="invalid-feedback">
-                                            ingresar nombre del cargo
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="descripcion">Descripción</label>
-                                        <input type="text" class="form-control" name="descripcion"
-                                            id="descripcionEdit" placeholder=" descripcion">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-dismiss="modal">cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                @include('Administrador.cargos.editarCargo')
                 <!-- Fin modal para editar cargo -->
             </div>
         </div>
@@ -172,12 +105,14 @@
                 });
             }, false);
             //codigo para eliminar
-            $(".btnEliminar").click(function() {
-                idEliminar = $(this).data('id');
-                alert(id);
-            });
-            $(".btnModalEliminar").click(function() {
-                $("#formEli_" + idEliminar).submit();
+            $(document).ready(function() {
+                $(".btnEliminar").click(function() {
+                    var idEliminar = $(this).data('id');
+
+                    $('#confirmarEliminar').off('click').on('click', function() {
+                        $('#formEli_' + idEliminar).submit();
+                    });
+                });
             });
             //codigo para editar
             $(".btnEditar").click(function() {
@@ -212,3 +147,75 @@
         });
     </script>
 @endpush
+<style>
+    .rounded-flexible-btn {
+        background: linear-gradient(to right, #007bff, #20c997);
+        /* Degradado de azul a verde turquesa */
+        color: white;
+        /* Color del texto */
+        border: none;
+        /* Sin borde */
+        border-radius: 25px;
+        /* Bordes redondeados */
+        padding: 10px 15px;
+        /* Espaciado interno */
+        display: inline-flex;
+        /* Permite alinear el contenido */
+        align-items: center;
+        /* Centra el contenido verticalmente */
+        justify-content: center;
+        /* Centra el contenido horizontalmente */
+        min-width: 35px;
+        /* Ancho mínimo */
+        min-height: 20px;
+        /* Alto mínimo */
+        font-size: 16px;
+        /* Tamaño del texto */
+        text-align: center;
+        /* Alineación del texto */
+        transition: all 0.3s ease-in-out;
+        /* Transición suave */
+    }
+
+    .rounded-flexible-btn:hover {
+        box-shadow: 0 0 10px 2px rgba(32, 201, 151, 0.7);
+        /* Resplandor suave en hover */
+        transform: scale(1.05);
+        /* Ligeramente agrandar el botón en hover */
+    }
+
+    tr th {
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    tr td {
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .nav-tabs .nav-link {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        /* color: #007bff; */
+        padding: 10px 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-tabs .nav-link.active {
+        /* background-color: #007bff; */
+        color: white;
+        border-radius: 10px;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+        /* color: #007bff; */
+    }
+
+    .btn-group .btn {
+        margin-right: 5px;
+        border-radius: 8px;
+        /* Bordes redondeados en los botones de acciones dentro del grupo */
+    }
+</style>

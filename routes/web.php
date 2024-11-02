@@ -29,34 +29,40 @@ Route::get('/', function () {
 
 Route::get('/metricas', [metricascontroller::class, 'index'])->name('metricas.index'); // ruta que reemplaza a dashboard ahora se llama metricas
 
-// Rutas protegidas
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Rutas protegidas
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Rutas para cargos
-    Route::get('/cargos', [CargoController::class, 'index'])->name('administrador.cargos.listar');
-    Route::post('/cargos/editar', [CargoController::class, 'editarCargo'])->name('administrador.cargos.listar');
-    Route::post('/cargos/agregar', [CargoController::class, 'agregarCargo'])->name('administrador.cargos.listar');
-    Route::post('/cargos/editarEstado/{id}', [CargoController::class, 'editarEstadoCargo'])->name('administrador.cargos.listar');
-    Route::resource('/cargos', CargoController::class);
+
+    Route::prefix('/cargos')->group(function () {
+        Route::get('/', [CargoController::class, 'index'])->name('administrador.cargos.listar');
+        Route::post('/editar', [CargoController::class, 'editarCargo'])->name('administrador.cargos.listar');
+        Route::post('/agregar', [CargoController::class, 'agregarCargo'])->name('administrador.cargos.listar');
+        Route::post('/editarEstado/{id}', [CargoController::class, 'editarEstadoCargo'])->name('administrador.cargos.listar');
+        Route::post('/eliminar/{id}', [CargoController::class, 'eliminarCargo'])->name('administrador.cargos.listar');
+    });
 
     // Rutas para funcionarios
-    Route::get('/funcionarios', [FuncionarioController::class, 'index'])->name('administrador.funcionarios.listarFu');
-    Route::post('/funcionarios/editar', [FuncionarioController::class, 'editarFuncionario'])->name('administrador.funcionarios.listarFu');
-    Route::post('/funcionarios/agregar', [FuncionarioController::class, 'agregarFuncionario'])->name('administrador.funcionarios.listarFu');
-    Route::post('/funcionarios/editarEstado/{id}', [FuncionarioController::class, 'editarEstadoFuncionario'])->name('administrador.funcionarios.listarFu');
-    Route::resource('/funcionarios', FuncionarioController::class);
+
+    Route::prefix('/funcionarios')->group(function () {
+        Route::get('/', [FuncionarioController::class, 'index'])->name('administrador.funcionarios.listarFu');
+        Route::post('/editar', [FuncionarioController::class, 'editarFuncionario'])->name('administrador.funcionarios.listarFu');
+        Route::post('/agregar', [FuncionarioController::class, 'agregarFuncionario'])->name('administrador.funcionarios.listarFu');
+        Route::post('/editarEstado/{id}', [FuncionarioController::class, 'editarEstadoFuncionario'])->name('administrador.funcionarios.listarFu');
+        Route::post('/eliminar/{id}', [FuncionarioController::class, 'eliminarFuncionario'])->name('administrador.funcionarios.listar');
+    });
 
     // Rutas para usuarios
     Route::prefix('/personal')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('usuario.index'); 
+        Route::get('/', [UserController::class, 'index'])->name('usuario.index');
         Route::post('/create', [UserController::class, 'store'])->name('usuario.store');
-        Route::get('/{id}', [UserController::class, 'show'])->name('usuario.show'); 
-        Route::put('/update/{id}', [UserController::class, 'update'])->name('usuario.update'); 
-        Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('usuario.destroy'); 
-        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('usuario.edit'); 
+        Route::get('/{id}', [UserController::class, 'show'])->name('usuario.show');
+        Route::put('/update/{id}', [UserController::class, 'update'])->name('usuario.update');
+        Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('usuario.destroy');
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('usuario.edit');
     });
 
     // Rutas para tipo documento

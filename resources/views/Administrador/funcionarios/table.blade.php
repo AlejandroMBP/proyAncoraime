@@ -35,7 +35,8 @@
                         @endif
                     </td>
                     <td>
-                        <button type="button" action class="btn btn-primary btn-sm btnEditar"
+                        <!-- Botón y fomulario para editar funcionario-->
+                        <button type="button" action class="rounded-flexible-btn btnEditar"
                             data-id="{{ $funcionario->id }}" data-nombre="{{ $funcionario->nombre }}"
                             data-paterno="{{ $funcionario->paterno }}" data-materno="{{ $funcionario->materno }}"
                             data-ci="{{ $funcionario->ci }}"
@@ -43,27 +44,24 @@
                             data-celular="{{ $funcionario->celular }}" data-cargo_id="{{ $funcionario->cargo_id }}"
                             data-unidad="{{ $funcionario->unidad }}"
                             data-descripcion="{{ $funcionario->descripcion }}" data-toggle="modal"
-                            data-target="#modalEditar"><i class="fa fa-pencil"></i></button>
-
-                        <!-- Botón que activa el envío del formulario -->
+                            data-target="#modalEditar"><i class="fa fa-edit"></i></button>
+                        <!-- Botón y fomulario para cambiar estado-->
                         <button onclick="enviarFormulario({{ $funcionario->id }})" type="button"
-                            class="btn btn-secondary btn-sm">
+                            class="rounded-flexible-btn">
                             <i class="fa fa-power-off"></i>
                         </button>
-                        <!-- Formulario oculto que se enviará como POST -->
                         <form id="form-editar-estado-{{ $funcionario->id }}"
                             action="{{ url('/funcionarios/editarEstado', ['id' => $funcionario->id]) }}" method="POST"
                             style="display: none;">
                             @csrf
                         </form>
-
-                        <button type="button" action class="btn btn-danger btn-sm btnEliminar"
-                            data-id="{{ $funcionario->id }}" data-toggle="modal" data-target="#modalEliminar"><i
-                                class="fa fa-trash-o"></i></button>
-                        <form action="{{ url('/funcionarios', ['id' => $funcionario->id]) }}" method="POST"
+                        <!-- Boton y formulario para eliminar el funcionario -->
+                        <button type="button" class="rounded-flexible-btn btnEliminar" data-id="{{ $funcionario->id }}"
+                            data-toggle="modal" data-target="#modalEliminar"><i class="fa fa-trash"></i></button>
+                        <form action="{{ url('/funcionarios/eliminar', ['id' => $funcionario->id]) }}" method="POST"
                             id="formEli_{{ $funcionario->id }}">
                             @csrf
-                            <input type="hidden" name="_method" value="delete">
+                            @method('POST') 
                         </form>
                     </td>
                 </tr>
@@ -79,3 +77,75 @@
 <div class="pagination-wrapper">
     {{ $funcionarios->links('pagination::bootstrap-5') }}
 </div>
+<style>
+    .rounded-flexible-btn {
+        background: linear-gradient(to right, #007bff, #20c997);
+        /* Degradado de azul a verde turquesa */
+        color: white;
+        /* Color del texto */
+        border: none;
+        /* Sin borde */
+        border-radius: 25px;
+        /* Bordes redondeados */
+        padding: 10px 15px;
+        /* Espaciado interno */
+        display: inline-flex;
+        /* Permite alinear el contenido */
+        align-items: center;
+        /* Centra el contenido verticalmente */
+        justify-content: center;
+        /* Centra el contenido horizontalmente */
+        min-width: 35px;
+        /* Ancho mínimo */
+        min-height: 20px;
+        /* Alto mínimo */
+        font-size: 16px;
+        /* Tamaño del texto */
+        text-align: center;
+        /* Alineación del texto */
+        transition: all 0.3s ease-in-out;
+        /* Transición suave */
+    }
+
+    .rounded-flexible-btn:hover {
+        box-shadow: 0 0 10px 2px rgba(32, 201, 151, 0.7);
+        /* Resplandor suave en hover */
+        transform: scale(1.05);
+        /* Ligeramente agrandar el botón en hover */
+    }
+
+    tr th {
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    tr td {
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .nav-tabs .nav-link {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        /* color: #007bff; */
+        padding: 10px 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-tabs .nav-link.active {
+        /* background-color: #007bff; */
+        color: white;
+        border-radius: 10px;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+        /* color: #007bff; */
+    }
+
+    .btn-group .btn {
+        margin-right: 5px;
+        border-radius: 8px;
+        /* Bordes redondeados en los botones de acciones dentro del grupo */
+    }
+</style>

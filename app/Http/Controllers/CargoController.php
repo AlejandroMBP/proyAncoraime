@@ -9,25 +9,25 @@ use Illuminate\Support\Facades\Validator;
 
 class CargoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+
     public function index(Request $request)
     {
         $search = $request->input('search');
-    
+
         // Consultar los cargos, filtrando si se proporciona un término de búsqueda
         $cargos = Cargo::when($search, function ($query) use ($search) {
             return $query->where('nombre', 'like', '%' . $search . '%');
         })
+        ->where('estado', '!=', 'eliminado') // Filtra los registros donde el estado no sea 'eliminado'
         ->orderBy('id', 'DESC')
         ->paginate(10);
-    
+
         // Verificar si la solicitud es AJAX
         if ($request->ajax()) {
             return view('Administrador.cargos.tablaCargos', compact('cargos'));
         }
-        return view('Administrador.cargos.listar', ['cargos' => $cargos],['search' => $search]);
+        return view('Administrador.cargos.listar', ['cargos' => $cargos], ['search' => $search]);
     }
 
     public function create()
@@ -42,7 +42,7 @@ class CargoController extends Controller
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion ?? ' ',
             'estado' => 'activo',
-            'usuario_id' => 1,
+            'usuario_id' => auth()->id(),
         ]);
         return back()->with('listo', 'se ha insertado correctamente');
     }
@@ -61,17 +61,12 @@ class CargoController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function editarCargo(Request $request)
     {
         $cargo = Cargo::findOrFail($request->id);
@@ -91,10 +86,7 @@ class CargoController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function eliminarCargo($id)
     {
         //
         $cargo = Cargo::findOrFail($id);

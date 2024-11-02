@@ -20,16 +20,15 @@
                     <h6 class="title-inner text-uppercase">Striped Rows</h6>
                     <div class="row">
                         <div class=" col-md-8">
-                            <button type="button" class="btn btn-success" data-toggle="modal"
-                                data-target="#modalAgregar"><i class="fa fa-plus"></i> Agregar Funcionario
+                            <button type="button" class="rounded-flexible-btn" data-toggle="modal"
+                                data-target="#modalAgregar"> Agregar Funcionario
                             </button>
                         </div>
                         <div class=" col-md-4">
                             <!-- Formulario de búsqueda -->
                             <p class="form-inline">
-                                <button class="btn btn-primary"><i class="fa fa-search"></i></button>
-                                <input type="text" id="search" class="form-control mr-2"
-                                    placeholder="Buscar funcionario..." value="{{ request('search') }}">
+                                Buscar <input type="text" id="search" class="form-control mr-2"
+                                    placeholder=" funcionario..." value="{{ request('search') }}">
                             </p>
                         </div>
                     </div>
@@ -56,22 +55,22 @@
                 <!-- Fin modal para agregar funcionario -->
 
                 <!-- Modal para eliminar cargo-->
-                <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog"
+                    aria-labelledby="modalEliminarLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ELIMINAR FUNCIONARIO</h5>
+                                <h5 class="modal-title" id="modalEliminarLabel">Confirmar Eliminación</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <h5>¿ Esta seguro de eliminar este funcionario ?</h5>
+                                ¿Estás seguro de que deseas eliminar este funcionario?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">cancelar</button>
-                                <button type="button" class="btn btn-danger btnModalEliminar">Eliminar</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" id="confirmarEliminar">Eliminar</button>
                             </div>
                         </div>
                     </div>
@@ -104,12 +103,14 @@
                 });
             }, false);
             //codigo para eliminar
-            $(".btnEliminar").click(function() {
-                idEliminar = $(this).data('id');
-                alert(id);
-            });
-            $(".btnModalEliminar").click(function() {
-                $("#formEli_" + idEliminar).submit();
+            $(document).ready(function() {
+                $(".btnEliminar").click(function() {
+                    var idEliminar = $(this).data('id');
+
+                    $('#confirmarEliminar').off('click').on('click', function() {
+                        $('#formEli_' + idEliminar).submit();
+                    });
+                });
             });
             //codigo para editar
             $(".btnEditar").click(function() {
