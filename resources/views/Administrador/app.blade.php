@@ -16,14 +16,17 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/elements/modals.css') }}">
     <!-- Custom CSS Starts -->
+    <link rel="stylesheet" href="{{ asset('misEstilos/estilos.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/skin/all-skins.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/general/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/sidebar/side-nav.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/fonts/fonts-style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/nanoscroller/nanoscroller.css') }}">
+    
+    <!-- Incluye el CSS de SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @stack('links')
 </head>
 
@@ -40,9 +43,11 @@
         <!-- Page Content Starts-->
         @yield('contenido')
         <!-- Page Content Ends -->
+
         <!-- Back to Top Starts -->
         <a href="javascript:" id="return-to-top"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
         <!-- Back to Top Ends -->
+
         @include('Administrador.layout.footer')
     </div>
 
@@ -59,20 +64,21 @@
     <!-- Theme JS -->
     <script src="{{ asset('assets/js/nanoscroller/nanoscroller.js') }}"></script>
     <script src="{{ asset('assets/js/custom/theme.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript">
-        $(".modal").each(function(l) {
-            $(this).on("show.bs.modal", function(l) {
+        $(".modal").each(function() {
+            $(this).on("show.bs.modal", function() {
                 var o = $(this).attr("data-easein");
-                "shake" == o ? $(".modal-dialog").velocity("callout." + o) :
-                "pulse" == o ? $(".modal-dialog").velocity("callout." + o) :
-                "tada" == o ? $(".modal-dialog").velocity("callout." + o) :
-                "flash" == o ? $(".modal-dialog").velocity("callout." + o) :
-                "bounce" == o ? $(".modal-dialog").velocity("callout." + o) :
-                "swing" == o ? $(".modal-dialog").velocity("callout." + o) :
-                $(".modal-dialog").velocity("transition." + o)
-            })
+                if (o) {
+                    $(".modal-dialog").velocity("callout." + o);
+                } else {
+                    $(".modal-dialog").velocity("transition." + o);
+                }
+            });
         });
     </script>
+
     @stack('scripts')
 </body>
 

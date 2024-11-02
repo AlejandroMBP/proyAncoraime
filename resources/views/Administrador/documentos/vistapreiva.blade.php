@@ -20,6 +20,28 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Vista Previa del Documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="preview-info"><strong>Hoja de Ruta:</strong> <span id="previewHojaRuta"></span></p>
+                <p class="preview-info"><strong>Título:</strong> <span id="previewTitulo"></span></p>
+                <p class="preview-info"><strong>Fecha:</strong> <span id="previewFecha"></span></p>
+                <p class="preview-info"><strong>Ubicación:</strong> <span id="previewUbicacion"></span></p>
+                <div class="canvas-container">
+                    <canvas id="pdfPreviewCanvas"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-close-btn" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <style>
     .modal-title {
         color: white;

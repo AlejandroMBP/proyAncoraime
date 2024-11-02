@@ -13,14 +13,13 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
+|--------------------------------------------------------------------------|
+| Web Routes                                                               |
+|--------------------------------------------------------------------------|
+| Here is where you can register web routes for your application.          |
+| These routes are loaded by the RouteServiceProvider and all of them will |
+| be assigned to the "web" middleware group. Make something great!        |
+|--------------------------------------------------------------------------|
 */
 
 Route::get('/', function () {
@@ -29,30 +28,28 @@ Route::get('/', function () {
 
 Route::get('/metricas', [metricascontroller::class, 'index'])->name('metricas.index'); // ruta que reemplaza a dashboard ahora se llama metricas
 
-    // Rutas protegidas
-    Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// Rutas protegidas
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Rutas para cargos
-
     Route::prefix('/cargos')->group(function () {
         Route::get('/', [CargoController::class, 'index'])->name('administrador.cargos.listar');
-        Route::post('/editar', [CargoController::class, 'editarCargo'])->name('administrador.cargos.listar');
-        Route::post('/agregar', [CargoController::class, 'agregarCargo'])->name('administrador.cargos.listar');
-        Route::post('/editarEstado/{id}', [CargoController::class, 'editarEstadoCargo'])->name('administrador.cargos.listar');
-        Route::post('/eliminar/{id}', [CargoController::class, 'eliminarCargo'])->name('administrador.cargos.listar');
+        Route::post('/editar', [CargoController::class, 'editarCargo'])->name('administrador.cargos.editar');
+        Route::post('/agregar', [CargoController::class, 'agregarCargo'])->name('administrador.cargos.agregar');
+        Route::post('/editarEstado/{id}', [CargoController::class, 'editarEstadoCargo'])->name('administrador.cargos.editarEstado');
+        Route::post('/eliminar/{id}', [CargoController::class, 'eliminarCargo'])->name('administrador.cargos.eliminar');
     });
 
     // Rutas para funcionarios
-
     Route::prefix('/funcionarios')->group(function () {
         Route::get('/', [FuncionarioController::class, 'index'])->name('administrador.funcionarios.listarFu');
-        Route::post('/editar', [FuncionarioController::class, 'editarFuncionario'])->name('administrador.funcionarios.listarFu');
-        Route::post('/agregar', [FuncionarioController::class, 'agregarFuncionario'])->name('administrador.funcionarios.listarFu');
-        Route::post('/editarEstado/{id}', [FuncionarioController::class, 'editarEstadoFuncionario'])->name('administrador.funcionarios.listarFu');
-        Route::post('/eliminar/{id}', [FuncionarioController::class, 'eliminarFuncionario'])->name('administrador.funcionarios.listar');
+        Route::post('/editar', [FuncionarioController::class, 'editarFuncionario'])->name('administrador.funcionarios.editar');
+        Route::post('/agregar', [FuncionarioController::class, 'agregarFuncionario'])->name('administrador.funcionarios.agregar');
+        Route::post('/editarEstado/{id}', [FuncionarioController::class, 'editarEstadoFuncionario'])->name('administrador.funcionarios.editarEstado');
+        Route::post('/eliminar/{id}', [FuncionarioController::class, 'eliminarFuncionario'])->name('administrador.funcionarios.eliminar');
     });
 
     // Rutas para usuarios
@@ -81,21 +78,18 @@ Route::get('/metricas', [metricascontroller::class, 'index'])->name('metricas.in
         Route::post('/cambioEstado/{id}', [documentosController::class, 'cambioEstado'])->name('documentos.cambioEstado');
     });
 
-    Route::post('/reporte/pdf', [ReporteController::class, 'generarPDF'])->name('reporte.pdf');
-    Route::post('/reporte/excel', [ReporteController::class, 'generarExcel'])->name('reporte.excel');
-
     // Rutas para préstamos
     Route::prefix('/prestamos')->group(function () {
         Route::get('/', [prestamosController::class, 'index'])->name('prestamos.index');
-        Route::get('/buscar-documento', [PrestamosController::class, 'buscar'])->name('prestamos.buscar');
-        Route::get('/buscar-funcionario', [PrestamosController::class, 'buscarfuncionario'])->name('prestamos.buscarFuncionario');
+        Route::get('/buscar-documento', [prestamosController::class, 'buscar'])->name('prestamos.buscar');
+        Route::get('/buscar-funcionario', [prestamosController::class, 'buscarfuncionario'])->name('prestamos.buscarFuncionario');
         Route::post('/create', [prestamosController::class, 'store'])->name('prestamos.store');
         Route::post('/cambioEstado/{id}', [prestamosController::class, 'cambioEstado'])->name('prestamos.cambioEstado');
+        Route::put('/prestamos/{id}', [prestamosController::class, 'update'])->name('prestamos.update');
+        Route::post('/prestamos/edit/{id}', [prestamosController::class, 'actualizar'])->name('prestamos.actualizar');
+        Route::get('/prestamos/show/{id}', [prestamosController::class, 'show'])->name('prestamos.show');
+        Route::post('/prestamos/reportes/', [ReporteController::class, 'generarReporte'])->name('prestamos.reporte');
     });
-    Route::put('/prestamos/{id}', [prestamosController::class, 'update'])->name('prestamos.update');
-    Route::post('/prestamos/edit/{id}', [prestamosController::class, 'actualizar'])->name('prestamos.actualizar');
-    Route::get('/prestamos/show/{id}', [prestamosController::class, 'show'])->name('prestamos.show');
-    Route::post('/prestamos/reportes/', [ReporteController::class, 'generarReporte'])->name('prestamos.reporte');
 
     // Rutas para impresiones
     Route::prefix('/impresiones')->group(function () {
@@ -107,6 +101,9 @@ Route::get('/metricas', [metricascontroller::class, 'index'])->name('metricas.in
         Route::get('/documentos/{id}', [impresionesController::class, 'imprimir'])->name('documentos.imprimir');
         Route::post('/reporte', [ReporteController::class, 'ReporteImpresiones'])->name('impresiones.reporte');
     });
+
+    Route::post('/reporte/pdf', [ReporteController::class, 'generarPDF'])->name('reporte.pdf');
+    Route::post('/reporte/excel', [ReporteController::class, 'generarExcel'])->name('reporte.excel');
 });
 
 require __DIR__ . '/auth.php';
